@@ -16,7 +16,16 @@ code {
 
 .App {
   height: 100vh;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+}
+
+
+#content {
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image:url("/img/bg.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
 }

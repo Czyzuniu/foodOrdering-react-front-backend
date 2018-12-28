@@ -2,7 +2,13 @@ const express = require('express')
 const bodyParser = require('body-parser')
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
+const cors = require('cors')
 const KnexSessionStore = require('connect-session-knex')(session);
+
+const STATUSES = {
+  'SUCCESS':'success',
+  'FAILED':'failed'
+}
 
 const app = express()
 const port = 3001
@@ -10,6 +16,9 @@ const port = 3001
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+
+app.use(cookieParser())
+app.use(cors({credentials: true, origin: true}))
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -38,72 +47,176 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 60000
+    maxAge: 60000 * 30
   },
-  clearInterval:15000
+  clearInterval:60000
 }));
 
-//
-// app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }}))
+app.get('/myRestaurants', (req, res) => {
+  let authentication= JSON.parse(req.cookies.authentication)
 
-
-
-app.get('/restaurants', (req, res) => {
-  res.json({'msg': 'restaurants'})
-})
-
-app.post('/checkAuthentication', (req, res) => {
-    let sessionId = req.body.sessionId
-
-    console.log(sessionId,'this')
-
-    if (!sessionId) {
-      return res.json({'status':'notAuthenticated'})
-    } else {
-      knex('sessions').where('sid', '=', sessionId).select().then((data) => {
-        if (data.length == 1) {
-          console.log('server returned authenitcation')
-          return res.json({'status':'authenticated'})
-        } else {
-          return res.json({'status':'notAuthenticated'})
+  knex('RESTAURANT')
+    .where('RESTAURANT_OWNER','=', authentication.userId)
+    .select()
+    .then((data) => {
+      res.json(
+        {
+          status:STATUSES.SUCCESS,
+          restaurantsData:data
         }
-      })
-    }
+      )
+    })
 })
 
 
+app.post('/addRestaurant', (req, res) => {
 
-app.post('/register', (req, res) => {
-  console.log(req.body)
-  // bcrypt.hash(myPlaintextPassword, saltRounds, function(err, hash) {
-  //   // Store hash in your password DB.
-  // });
+  knex('sessions')
+    .where('sid', '=', JSON.parse(req.cookies.authentication).sessionId)
+    .select()
+    .then((user) => {
+      if (user.length) {
+        const record = {
+          'RESTAURANT_NAME':req.body.restaurantName,
+          'RESTAURANT_OWNER':JSON.parse(user[0].sess).userData,
+          'RESTAURANT_POSTCODE':req.body.postalCode,
+          'RESTAURANT_STREET':req.body.street,
+          'RESTAURANT_CITY':req.body.city,
+          'RESTAURANT_TABLE_COUNT':req.body.restaurantTableCount,
+          'RESTAURANT_PRE_BOOK':req.body.allowPreBook,
+        }
 
-  //hash later, add first name to db too
-
-  knex('PERSON')
-    .insert({'PERSON_EMAIL':req.body.emailAddress, 'PERSON_PASSWORD':req.body.password})
-    .then(() => {
-      console.log('stored in db')
+        knex('RESTAURANT')
+          .insert(record)
+          .then(() => {
+            return res.json({'status':STATUSES.SUCCESS})
+          })
+      } else {
+        return res.json({'status':'notAuthenticated'})
+      }
     })
 })
 
 
 
+app.post('/deleteRestaurant', (req, res) => {
+  console.log(req.body)
+  knex('sessions')
+    .where('sid', '=', JSON.parse(req.cookies.authentication).sessionId)
+    .select()
+    .then((user) => {
+      if (user.length) {
+        knex('RESTAURANT')
+          .where('RESTAURANT_ID', '=', req.body.restaurantId)
+          .del()
+          .then((data) => {
+            if (data) {
+              return res.json({'status':STATUSES.SUCCESS})
+            } else {
+              return res.json({'status':STATUSES.FAILED})
+            }
+          })
+      } else {
+        return res.json({'status':'notAuthenticated'})
+      }
+    })
+})
+
+
+app.get('/checkAuthentication', (req, res) => {
+
+  if (!req.cookies.authentication) {
+    return res.json({'status':'notAuthenticated'})
+  }
+
+  let authentication = JSON.parse(req.cookies.authentication)
+
+  if (authentication) {
+    let sessionId = authentication.sessionId
+
+    if (sessionId) {
+      knex('sessions').where('sid', '=', sessionId).select().then((data) => {
+        if (data.length == 1) {
+          return res.json({'status': 'authenticated'})
+        } else {
+          return res.json({'status': 'notAuthenticated'})
+        }
+      })
+    } else {
+      return res.json({'status':'notAuthenticated'})
+    }
+  }
+
+
+
+})
+
+app.get('/signOut', (req, res) => {
+
+  let authentication= JSON.parse(req.cookies.authentication)
+  let sessionId = authentication.sessionId
+
+  knex('sessions')
+    .where('sid','=', sessionId)
+    .del()
+    .then((data) => {
+      console.log(data)
+      res.json({'status':STATUSES.SUCCESS})
+    })
+})
+
+
+
+app.post('/register', (req, res) => {
+
+  bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
+
+    const record = {
+      'PERSON_EMAIL':req.body.emailAddress,
+      'PERSON_PASSWORD':hash,
+      'PERSON_FIRSTNAME':req.body.firstName,
+      'PERSON_LASTNAME':req.body.lastName,
+      'PERSON_PHONE':req.body.phone,
+    }
+
+    knex('PERSON')
+      .insert(record)
+      .then((data) => {
+        console.log('register success', data)
+        res.json({status:STATUSES.SUCCESS});
+      }).catch((err) => {
+        console.log('registration went wrong', err)
+      res.json({status:STATUSES.FAILED});
+    })
+  });
+
+
+})
+
 app.post('/login', (req, res) => {
-  console.log('login')
   knex('PERSON')
     .where('PERSON_EMAIL', '=', req.body.emailAddress)
-    .andWhere('PERSON_PASSWORD','=',req.body.password)
     .select().then((userData) => {
-    console.log(userData)
-    if (userData.length == 1) {
-      req.session.isAuthenticated = true
-      res.json({status:"success", sessionId:req.session.id});
-    } else {
-      res.json({status:"failed"});
-    }
+      if (userData.length) {
+        bcrypt.compare(req.body.password, userData[0].PERSON_PASSWORD, (err, hashres) => {
+          if (hashres) {
+            req.session.userData = userData[0].PERSON_ID
+            res.json({status:STATUSES.SUCCESS, sessionId:req.session.id,
+              authenticatedUser:{
+                id:userData[0].PERSON_ID,
+                firstName:userData[0].PERSON_FIRSTNAME,
+                lastName:userData[0].PERSON_LASTNAME
+              }
+            });
+          } else {
+            res.json({status:STATUSES.FAILED});
+          }
+        })
+      } else {
+        res.json({status:STATUSES.FAILED});
+      }
   })
+
 })
 
 

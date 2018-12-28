@@ -10,6 +10,7 @@ import Typography from "@material-ui/core/Typography/Typography";
 import Toolbar from "@material-ui/core/Toolbar/Toolbar";
 import {Link} from 'react-router-dom'
 import Utils from "../components/Utils";
+import Cookies from 'universal-cookie';
 
 const styles = theme => ({
   root: {
@@ -67,7 +68,11 @@ class Login extends Component {
   login = () => {
     Utils.postData('http://localhost:3001/login', this.state).then((data) => {
       if (data.status == 'success') {
-        localStorage.setItem('sessionId', data.sessionId)
+        localStorage.setItem('foodApp', JSON.stringify({
+          'authenticatedUser': data.authenticatedUser
+        })
+        )
+        document.cookie = 'authentication=' + JSON.stringify({sessionId: data.sessionId, userId: data.authenticatedUser.id})
         Utils.navigate('/')
       } else {
         alert('wrong email or password')

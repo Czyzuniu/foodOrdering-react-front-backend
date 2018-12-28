@@ -14,10 +14,12 @@
     "body-parser": "^1.18.3",
     "connect-session-knex": "^1.4.0",
     "cookie-parser": "^1.4.3",
+    "cors": "^2.8.5",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
     "knex": "^0.16.2",
     "mysql": "^2.16.0",
-    "nodemon": "^1.18.9"
+    "nodemon": "^1.18.9",
+    "password-hash": "^1.2.2"
   }
 }

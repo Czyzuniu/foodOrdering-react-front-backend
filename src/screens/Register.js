@@ -55,11 +55,11 @@ class Register extends Component {
   }
 
   register = () => {
-    console.log('hh')
-    Utils.postData('http://localhost:3001/register',this.state).then((data) => {
-      console.log('success')
+    Utils.postData(`http://${Utils.endPoint}/register`,this.state).then((data) => {
+      this.props.history.push('/login')
     }).catch((err) => {
       console.log(err)
+      alert(err)
     })
   }
 
@@ -76,7 +76,7 @@ class Register extends Component {
                 Sign up
               </Typography>
 
-              <div className={classes.firstRow}>
+              <div>
                 <TextField
                   id="firstName-input"
                   label="First Name"

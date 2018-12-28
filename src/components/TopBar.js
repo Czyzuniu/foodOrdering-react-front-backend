@@ -68,12 +68,15 @@ const styles = theme => ({
 });
 
 class TopBar extends React.Component {
-  state = {
-    anchorEl: null,
-    mobileMoreAnchorEl: null,
-    loggedIn:false,
-    isAuthenticated:false
-  };
+
+  constructor(props){
+    super(props)
+
+    this.state = {
+      anchorEl: null,
+      isAuthenticated:false
+    };
+  }
 
   handleProfileMenuOpen = event => {
     this.setState({ anchorEl: event.currentTarget });
@@ -84,13 +87,16 @@ class TopBar extends React.Component {
   };
 
   signOut = () => {
-    localStorage.removeItem('sessionId')
-    Utils.navigate('/login')
+    localStorage.removeItem('foodApp')
+    Utils.getData('http://localhost:3001/signOut').then((res) => {
+      if (res.status == 'success') {
+        Utils.navigate('/login')
+      }
+    })
   }
 
   componentDidMount() {
     Utils.isAuthenticated().then((isAuthenticated) => {
-      console.log(isAuthenticated, 'hhhh')
       this.setState({
         isAuthenticated:isAuthenticated
       })
@@ -102,6 +108,8 @@ class TopBar extends React.Component {
     const isMenuOpen = Boolean(anchorEl);
     const { classes } = this.props;
 
+    const authenticatedUser = JSON.parse(localStorage.getItem('foodApp')).authenticatedUser
+
     const renderDropdownMenu = (
       <Menu
         anchorEl={anchorEl}
@@ -112,7 +120,7 @@ class TopBar extends React.Component {
       >
         <MenuItem onClick={this.handleMenuClose}> My Profile</MenuItem>
         <MenuItem onClick={() => {
-          this.navigate('/restaurants')
+          Utils.navigate('/restaurants')
         }}> My Restaurants</MenuItem>
 
         <MenuItem onClick={this.signOut}>Sign out</MenuItem>
@@ -122,7 +130,7 @@ class TopBar extends React.Component {
     const renderLoggedOptions = (
       <div className={classes.center}>
         <Typography className={classes.title} variant="subtitle1" color="inherit" noWrap>
-          Konrad Kolpak
+          {authenticatedUser.firstName} {authenticatedUser.lastName}
         </Typography>
         <div className={classes.sectionDesktop}>
           <IconButton

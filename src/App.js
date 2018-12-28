@@ -16,6 +16,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import Login from "./screens/Login";
 import Utils from './components/Utils'
+import RegisterRestaurant from "./screens/RegisterRestaurant";
+import AddMenu from "./screens/AddMenu";
 
 class App extends Component {
 
@@ -23,7 +25,20 @@ class App extends Component {
     super(props)
   }
 
+  componentWillMount() {
+    if (localStorage.getItem('foodApp') == "null" || localStorage.getItem('foodApp') == null ) {
+      localStorage.setItem('foodApp', JSON.stringify(
+        {
+          sessionId:null,
+          authenticatedUser:{}
+        }
+      )
+      )
+    }
+  }
+
   render() {
+
     return (
       <div className="App">
         <BrowserRouter>
@@ -33,35 +48,11 @@ class App extends Component {
             <Route path="/register" component={Register} />
             <PrivateRoute exact path="/" component={Home} />
             <PrivateRoute exact path="/restaurants" component={Restaurants} />
+            <PrivateRoute exact path="/registerRestaurant" component={RegisterRestaurant} />
+            <PrivateRoute exact path="/addMenu" component={AddMenu} />
           </div>
         </BrowserRouter>
       </div>
-    )
-  }
-}
-
-
-class AppProvider extends Component {
-
-  constructor(props){
-    super(props)
-
-    this.state = {
-      sessionId: localStorage.getItem('sessionId'),
-      authenticate: (session) => {
-        if (session) {
-          localStorage.setItem('sessionId', session)
-          this.setState({sessionId:session})
-        }
-      }
-    }
-  }
-
-  render() {
-    return (
-      <AppContext.Provider value={this.state}>
-      {this.props.children}
-      </AppContext.Provider>
     )
   }
 }

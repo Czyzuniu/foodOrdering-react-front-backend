@@ -6,12 +6,6 @@
       <change beforePath="$PROJECT_DIR$/food_app_backend/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/food_app_backend/app.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/food_app_backend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/food_app_backend/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/food_app_backend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/food_app_backend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mydb.sql" beforeDir="false" afterPath="$PROJECT_DIR$/mydb.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/AddMenuItemColumn.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AddMenuItemColumn.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/RestaurantCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/RestaurantCard.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Utils.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/screens/AddMenu.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/AddMenu.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/screens/Register.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/Register.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -127,7 +121,7 @@
         <counts>
           <entry key="css" value="186" />
           <entry key="html" value="1" />
-          <entry key="js" value="20811" />
+          <entry key="js" value="20919" />
           <entry key="json" value="17" />
           <entry key="sql" value="1" />
         </counts>
@@ -138,7 +132,7 @@
           <entry key="DBN-SQL" value="1" />
           <entry key="HTML" value="1" />
           <entry key="JSON" value="17" />
-          <entry key="JavaScript" value="20811" />
+          <entry key="JavaScript" value="20919" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -188,10 +182,10 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/food_app_backend/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="231">
-              <caret line="78" column="11" selection-start-line="78" selection-start-column="11" selection-end-line="78" selection-end-column="11" />
+            <state relative-caret-position="330">
+              <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
               <folding>
-                <marker date="1546890235864" expanded="true" signature="2044:3281" ph="..." />
+                <marker date="1546898352797" expanded="true" signature="2090:3364" ph="..." />
               </folding>
             </state>
           </provider>
@@ -294,7 +288,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>onDelete</find>
       <find>alert</find>
       <find>null</find>
       <find>add a res</find>
@@ -324,6 +317,7 @@
       <find>addM</find>
       <find>getRe</find>
       <find>and</find>
+      <find>AIzaSyB228AWCnKapnDizeZJDUS1RFoaKjdKhsI</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -474,12 +468,12 @@
       <workItem from="1539249433380" duration="755000" />
       <workItem from="1541093559247" duration="803000" />
       <workItem from="1541107689334" duration="12000" />
-      <workItem from="1545134663476" duration="103415000" />
+      <workItem from="1545134663476" duration="104725000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="115143000" />
+    <option name="totallyTimeSpent" value="116453000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="822" extended-state="6" />
@@ -806,10 +800,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/food_app_backend/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
-          <caret line="78" column="11" selection-start-line="78" selection-start-column="11" selection-end-line="78" selection-end-column="11" />
+        <state relative-caret-position="330">
+          <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
           <folding>
-            <marker date="1546890235864" expanded="true" signature="2044:3281" ph="..." />
+            <marker date="1546898352797" expanded="true" signature="2090:3364" ph="..." />
           </folding>
         </state>
       </provider>

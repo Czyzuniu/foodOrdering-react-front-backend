@@ -4,6 +4,7 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 const cors = require('cors')
 const KnexSessionStore = require('connect-session-knex')(session);
+require('dotenv').config({ path: './vars.env' })
 var requestify = require('requestify');
 
 //refactor later authentication check repetition
@@ -72,9 +73,6 @@ app.get('/myRestaurants', (req, res) => {
 })
 
 app.get('/getFoodByCategory', (req, res) => {
-
-
-
   knex('PRODUCT')
     .where({
       RESTAURANT_ID:req.query.restaurantId,
@@ -107,27 +105,27 @@ app.get('/getRestaurants', (req, res) => {
 
       return new Promise((resolve) => {
 
-        let url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${lat},${lng}&destinations=${restaurant.RESTAURANT_LATITUDE},${restaurant.RESTAURANT_LONGITUDE}&key=AIzaSyB228AWCnKapnDizeZJDUS1RFoaKjdKhsI`
-        requestify.get(url)
-          .then(function(response) {
-            let distanceMatrix = response.getBody().rows[0].elements[0]
-            let distance = distanceMatrix.distance.text
-            let distanceVal = distanceMatrix.distance.value
-            let time = distanceMatrix.duration.text
+        // let url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${lat},${lng}&destinations=${restaurant.RESTAURANT_LATITUDE},${restaurant.RESTAURANT_LONGITUDE}&key=${process.env.GOOGLE_API}`
+        // requestify.get(url)
+        //   .then(function(response) {
+        //     let distanceMatrix = response.getBody().rows[0].elements[0]
+        //     let distance = distanceMatrix.distance.text
+        //     let distanceVal = distanceMatrix.distance.value
+        //     let time = distanceMatrix.duration.text
+        //
+        //     let restaurantObject = {
+        //      restaurantId:restaurant.RESTAURANT_ID,
+        //       restaurantName:restaurant.RESTAURANT_NAME,
+        //       restaurantLat:restaurant.RESTAURANT_LATITUDE,
+        //       restaurantLong:restaurant.RESTAURANT_LONGITUDE,
+        //     }
 
-            let restaurantObject = {
-             restaurantId:restaurant.RESTAURANT_ID,
-              restaurantName:restaurant.RESTAURANT_NAME,
-              restaurantLat:restaurant.RESTAURANT_LATITUDE,
-              restaurantLong:restaurant.RESTAURANT_LONGITUDE,
-            }
 
 
+            //resolve({time:time, distance:distance,distanceVal:distanceVal, 'restaurant':restaurantObject})
+            resolve({ time: '1 min', distance: '0.8 km', distanceVal: 816, restaurant: { restaurantId:5, restaurantName: 'Jutrzenka', restaurantLat: 53.9278264, restaurantLong: 16.2573878 } })
 
-            resolve({time:time, distance:distance,distanceVal:distanceVal, 'restaurant':restaurantObject})
-            //resolve({ time: '1 min', distance: '0.8 km', distanceVal: 816, restaurant: { restaurantId:5, restaurantName: 'Jutrzenka', restaurantLat: 53.9278264, restaurantLong: 16.2573878 } })
-
-          })
+          //})
       })
     })
 
@@ -172,7 +170,9 @@ app.post('/addRestaurant', (req, res) => {
 
         let address = `${req.body.city} ${req.body.street} ${req.body.postalCode}`
 
-        requestify.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyB228AWCnKapnDizeZJDUS1RFoaKjdKhsI`)
+        console.log(process.env.GOOGLE_API)
+
+        requestify.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.GOOGLE_API}`)
           .then(function(response) {
               let location = response.getBody().results[0].geometry.location
 

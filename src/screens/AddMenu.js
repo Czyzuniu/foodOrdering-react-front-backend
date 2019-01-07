@@ -47,6 +47,29 @@ class AddMenu extends Component {
     this.inputRefs[this.refsCounter++] = ref
   }
 
+  addToMenu = () => {
+    let data = {
+      "menuItems":[],
+      "restaurantId":this.props.history.location.state.restaurantId
+    }
+    let i = 0
+    this.state.rows.map((row,index) => {
+      let inputRef = this.inputRefs[index]
+
+      if (inputRef) {
+        data.menuItems.push(inputRef.current.state)
+      }
+    })
+
+    if (data.menuItems.length) {
+      Utils.postData(`${Utils.endPoint}/addToMenu`, data).then((res) => {
+
+      }).catch((err) => {
+        alert(err)
+      })
+    }
+  }
+
   render() {
 
     const {classes} = this.props;
@@ -61,7 +84,7 @@ class AddMenu extends Component {
             })
           }
         </Paper>
-        <Button variant="contained" color={"primary"} className={classes.button} onClick={this.register}>
+        <Button variant="contained" color={"primary"} className={classes.button} onClick={this.addToMenu}>
           Add food items to menu
         </Button>
       </div>

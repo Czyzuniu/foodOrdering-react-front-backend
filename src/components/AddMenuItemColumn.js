@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
+import Utils from "./Utils";
 
 const styles = theme => ({
   container: {
@@ -24,23 +25,23 @@ const styles = theme => ({
 
 const foodTypes = [
   {
-    value: 'FOOD_STAR',
+    value: 'MT_STARTER',
     label: 'Starter',
   },
   {
-    value: 'FOOD_MAIN',
+    value: 'MT_MAIN',
     label: 'Main',
   },
   {
-    value: 'FOOD_DSRT',
+    value: 'MT_DSRT',
     label: 'Desert',
   },
   {
-    value: 'FOOD_SNK',
+    value: 'MT_SNK',
     label: 'Snack',
   },
   {
-    value: 'FOOD_DRNK',
+    value: 'MT_DRINK',
     label: 'Drink',
   },
 ];
@@ -50,12 +51,13 @@ class AddMenuItemColumn extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      productName:"",
-      productDescription:"",
-      productPrice:"",
-      productType:"FOOD_DSRT",
+      PRODUCT_NAME:"",
+      PRODUCT_DESCRIPTION:"",
+      PRODUCT_PRICE:"",
+      PRODUCT_MENU_TYPE:foodTypes[0].value,
     }
   }
+
 
   render() {
     const { classes } = this.props;
@@ -63,50 +65,51 @@ class AddMenuItemColumn extends React.Component {
     return (
       <form className={classes.container} >
         <TextField
+          required
           id="outlined-name"
           label="Product name"
-          value={this.state.productName}
+          value={this.state.PRODUCT_NAME}
           className={classes.textField}
           margin="normal"
           variant="outlined"
           onChange={(e) => {
             this.setState({
-              'productName':e.target.value
+              'PRODUCT_NAME':e.target.value
             })
           }}
 
         />
 
-
-
         <TextField
           id="outlined-uncontrolled"
           label="Product description"
-          value={this.state.productDescription}
+          value={this.state.PRODUCT_DESCRIPTION}
           className={classes.textField}
           margin="normal"
           variant="outlined"
           onChange={(e) => this.setState({
-            productDescription:e.target.value
+            PRODUCT_DESCRIPTION:e.target.value
           })}
+          required
         />
         <TextField
           required
           id="outlined-required"
-          value={this.state.productPrice}
+          value={this.state.PRODUCT_PRICE}
           label="Price"
           className={classes.textField}
           margin="normal"
           variant="outlined"
           onChange={(e) => this.setState({
-            productPrice:e.target.value
+            PRODUCT_PRICE:e.target.value
           })}
         />
         <TextField
+          required
           id="outlined-select-currency"
           select
           label="Product type"
-          value={this.state.productType}
+          value={this.state.PRODUCT_MENU_TYPE}
           className={classes.textField}
           SelectProps={{
             MenuProps: {
@@ -117,7 +120,7 @@ class AddMenuItemColumn extends React.Component {
           margin="normal"
           variant="outlined"
           onChange={(e) => this.setState({
-            productType:e.target.value
+            PRODUCT_MENU_TYPE:e.target.value
           })}
         >
           {foodTypes.map(option => (

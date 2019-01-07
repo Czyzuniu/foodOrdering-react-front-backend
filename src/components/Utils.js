@@ -57,6 +57,7 @@ class Utills {
     })
   }
 
+
   navigate = (url) => {
     window.location.href = url
   }

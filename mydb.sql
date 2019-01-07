@@ -7,6 +7,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema mydb
 -- -----------------------------------------------------
+DROP SCHEMA IF EXISTS `mydb` ;
 
 -- -----------------------------------------------------
 -- Schema mydb
@@ -17,6 +18,8 @@ USE `mydb` ;
 -- -----------------------------------------------------
 -- Table `mydb`.`PERSON`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`PERSON` ;
+
 CREATE TABLE IF NOT EXISTS `mydb`.`PERSON` (
   `PERSON_ID` INT NOT NULL AUTO_INCREMENT,
   `PERSON_FIRSTNAME` VARCHAR(45) NULL,
@@ -31,6 +34,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`RESTAURANT`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`RESTAURANT` ;
+
 CREATE TABLE IF NOT EXISTS `mydb`.`RESTAURANT` (
   `RESTAURANT_ID` INT NOT NULL AUTO_INCREMENT,
   `RESTAURANT_NAME` VARCHAR(45) NULL,
@@ -40,6 +45,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`RESTAURANT` (
   `RESTAURANT_CITY` VARCHAR(45) NULL,
   `RESTAURANT_TABLE_COUNT` INT NULL,
   `RESTAURANT_PRE_BOOK` TINYINT NULL,
+  `RESTAURANT_LATITUDE` DECIMAL(10,8) NOT NULL,
+  `RESTAURANT_LONGITUDE` DECIMAL(11,8) NOT NULL,
   PRIMARY KEY (`RESTAURANT_ID`),
   INDEX `R_OWN_PERSON_idx` (`RESTAURANT_OWNER` ASC),
   CONSTRAINT `R_OWN_PERSON`
@@ -53,6 +60,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`STATUS`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`STATUS` ;
+
 CREATE TABLE IF NOT EXISTS `mydb`.`STATUS` (
   `STATUS_ID` INT NOT NULL AUTO_INCREMENT,
   `STATUS_DESCRIPTION` VARCHAR(45) NULL,
@@ -63,6 +72,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`ORDER_HEADER`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`ORDER_HEADER` ;
+
 CREATE TABLE IF NOT EXISTS `mydb`.`ORDER_HEADER` (
   `ORDER_ID` INT NOT NULL AUTO_INCREMENT,
   `RESTAURANT_ID` INT NULL,
@@ -94,9 +105,11 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`MENUTYPE`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`MENUTYPE` ;
+
 CREATE TABLE IF NOT EXISTS `mydb`.`MENUTYPE` (
-  `MENU_TYPE_ID` INT NOT NULL AUTO_INCREMENT,
-  `MENU_CATEGORY` VARCHAR(45) NULL,
+  `MENU_TYPE_ID` VARCHAR(25) NOT NULL,
+  `MENU_DESCRIPTION` VARCHAR(45) NULL,
   PRIMARY KEY (`MENU_TYPE_ID`))
 ENGINE = InnoDB;
 
@@ -104,6 +117,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`REVIEW`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`REVIEW` ;
+
 CREATE TABLE IF NOT EXISTS `mydb`.`REVIEW` (
   `REVIEW_ID` INT NOT NULL AUTO_INCREMENT,
   `RESTAURANT_ID` INT NULL,
@@ -129,13 +144,16 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`PRODUCT`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`PRODUCT` ;
+
 CREATE TABLE IF NOT EXISTS `mydb`.`PRODUCT` (
   `PRODUCT_ID` INT NOT NULL AUTO_INCREMENT,
   `PRODUCT_PRICE` DECIMAL(15,2) NULL,
   `PRODUCT_NAME` VARCHAR(45) NULL,
-  `PRODUCT_MENU_TYPE` INT NULL,
+  `PRODUCT_MENU_TYPE` VARCHAR(25) NULL,
   `RESTAURANT_ID` INT NULL,
   `PRODUCT_REVIEW_ID` INT NULL,
+  `PRODUCT_DESCRIPTION` VARCHAR(255) NULL,
   PRIMARY KEY (`PRODUCT_ID`),
   INDEX `PROD_REST_idx` (`RESTAURANT_ID` ASC),
   INDEX `MENU_TYPE_idx` (`PRODUCT_MENU_TYPE` ASC),
@@ -161,6 +179,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`ORDER_ITEM`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`ORDER_ITEM` ;
+
 CREATE TABLE IF NOT EXISTS `mydb`.`ORDER_ITEM` (
   `ORDERITEM_ID` INT NOT NULL AUTO_INCREMENT,
   `ORDER_ID` INT NULL,
@@ -185,6 +205,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`PAYMENT_METHOD`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`PAYMENT_METHOD` ;
+
 CREATE TABLE IF NOT EXISTS `mydb`.`PAYMENT_METHOD` (
   `PAYMENT_METHOD_ID` INT NOT NULL AUTO_INCREMENT,
   `PAYMENT_METHOD_TYPE` VARCHAR(15) NULL,
@@ -206,3 +228,17 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 set global sql_mode='';
+
+-- -----------------------------------------------------
+-- Data for table `mydb`.`MENUTYPE`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `mydb`;
+INSERT INTO `mydb`.`MENUTYPE` (`MENU_TYPE_ID`, `MENU_DESCRIPTION`) VALUES ('MT_STARTER', 'Starter');
+INSERT INTO `mydb`.`MENUTYPE` (`MENU_TYPE_ID`, `MENU_DESCRIPTION`) VALUES ('MT_SNK', 'Snack');
+INSERT INTO `mydb`.`MENUTYPE` (`MENU_TYPE_ID`, `MENU_DESCRIPTION`) VALUES ('MT_DRINK', 'Drink');
+INSERT INTO `mydb`.`MENUTYPE` (`MENU_TYPE_ID`, `MENU_DESCRIPTION`) VALUES ('MT_DSRT', 'Desert');
+INSERT INTO `mydb`.`MENUTYPE` (`MENU_TYPE_ID`, `MENU_DESCRIPTION`) VALUES ('MT_MAIN', 'Main');
+
+COMMIT;
+

@@ -55,7 +55,7 @@ class Register extends Component {
   }
 
   register = () => {
-    Utils.postData(`http://${Utils.endPoint}/register`,this.state).then((data) => {
+    Utils.postData(`${Utils.endPoint}/register`,this.state).then((data) => {
       this.props.history.push('/login')
     }).catch((err) => {
       console.log(err)

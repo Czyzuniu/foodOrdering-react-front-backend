@@ -74,7 +74,7 @@ class RestaurantCard extends Component {
         </CardContent>
         <div id='restaurantCardButtonContainer'>
           <Button variant="contained" color="primary"  className={classes.button} onClick={() => {
-            this.props.router.push('/addMenu', { id: 7, color: 'green' })
+            this.props.router.push('/addMenu', { restaurantId: restaurant.RESTAURANT_ID})
           }}>
             Add menu
           </Button>

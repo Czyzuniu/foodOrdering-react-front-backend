@@ -81,7 +81,9 @@ class RestaurantCard extends Component {
           <Button variant="contained" color="primary"  className={classes.button}>
             Edit
           </Button>
-          <Button variant="contained" color="primary"  className={classes.button}>
+          <Button variant="contained" color="primary"  className={classes.button} onClick={() => {
+            this.props.router.push('/viewOrders', { restaurantId: restaurant.RESTAURANT_ID})
+          }}>
             View orders
           </Button>
         </div>

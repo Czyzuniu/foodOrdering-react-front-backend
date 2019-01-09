@@ -18,6 +18,7 @@ import Login from "./screens/Login";
 import Utils from './components/Utils'
 import RegisterRestaurant from "./screens/RegisterRestaurant";
 import AddMenu from "./screens/AddMenu";
+import ViewOrders from "./screens/ViewOrders";
 
 class App extends Component {
 
@@ -50,6 +51,7 @@ class App extends Component {
             <PrivateRoute exact path="/restaurants" component={Restaurants} />
             <PrivateRoute exact path="/registerRestaurant" component={RegisterRestaurant} />
             <PrivateRoute exact path="/addMenu" component={AddMenu} />
+            <PrivateRoute exact path="/viewOrders" component={ViewOrders} />
           </div>
         </BrowserRouter>
       </div>

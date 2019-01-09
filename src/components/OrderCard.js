@@ -50,39 +50,51 @@ class OrderCard extends Component {
 
     render() {
 
-        const { classes } = this.props;
+        const { classes, order } = this.props;
+    //
+    //   <ListItem>
+    //     <Avatar className={classes.blackAvatar}>
+    //       <RestaurantIcon color={'primary'}/>
+    //     </Avatar>
+    //     <ListItemText primary="Sweet Chili Wrap" secondary="x 3" />
+    //   </ListItem>
+    //   <Divider/>
+    //   <ListItem>
+    //   <Avatar className={classes.blackAvatar}>
+    // <LocalDrinkIcon color={'primary'}/>
+    // </Avatar>
+    // <ListItemText primary="Large Pepsi" secondary="Quantity : 1" />
+    //     </ListItem>
+    //   <Divider/>
+    //   <ListItem>
+    //   <Avatar className={classes.blackAvatar}>
+    // <LocalBarIcon color={'primary'} />
+    // </Avatar>
+    // <ListItemText primary="Heineken" secondary="Quantity : 1" />
+    //     </ListItem>
 
         return (
             <Card className={classes.card}>
                 <CardContent>
                     <Typography variant="headline" component="h2">
-                        Order Number : {this.props.orderId}
+                        Order Number : {order.orderId}
                     </Typography>
                     <List>
-                        <ListItem>
+                      {order.orderItems.map((item) => {
+                        console.log(item)
+                        return (
+                          <ListItem>
                             <Avatar className={classes.blackAvatar}>
-                                <RestaurantIcon color={'primary'}/>
+                              {item.PRODUCT_MENU_TYPE == 'MT_DRINK' ?  <LocalDrinkIcon color={'primary'}/> : <RestaurantIcon color={'primary'}/>}
                             </Avatar>
-                            <ListItemText primary="Sweet Chili Wrap" secondary="x 3" />
-                        </ListItem>
-                        <Divider/>
-                        <ListItem>
-                            <Avatar className={classes.blackAvatar}>
-                                <LocalDrinkIcon color={'primary'}/>
-                            </Avatar>
-                            <ListItemText primary="Large Pepsi" secondary="Quantity : 1" />
-                        </ListItem>
-                        <Divider/>
-                        <ListItem>
-                            <Avatar className={classes.blackAvatar}>
-                                <LocalBarIcon color={'primary'} />
-                            </Avatar>
-                            <ListItemText primary="Heineken" secondary="Quantity : 1" />
-                        </ListItem>
+                            <ListItemText primary={item.PRODUCT_NAME} secondary={`x ${item.QUANTITY}`} />
+                          </ListItem>
+                        )
+                      })}
                         <Divider/>
                     </List>
                     <Typography variant="caption" component="h2">
-                        Total Price : £15.99
+                        Total Price : £ {order.totalPrice.toFixed(2)}
                     </Typography>
                 </CardContent>
                 <Button variant="contained" color="primary"  className={classes.button}>

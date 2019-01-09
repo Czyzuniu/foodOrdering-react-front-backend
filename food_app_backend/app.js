@@ -14,12 +14,16 @@ const STATUSES = {
   'FAILED':'failed'
 }
 
-const app = express()
 const port = 3001
 
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+var app = require('express')();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
+let socketClients = []
 
 app.use(cookieParser())
 app.use(cors({credentials: true, origin: true}))
@@ -56,6 +60,12 @@ app.use(session({
   clearInterval:60000
 }));
 
+
+io.on('connection', function(socket){
+  console.log('a user connected');
+  socketClients.push(socket)
+});
+
 app.get('/myRestaurants', (req, res) => {
   let authentication= JSON.parse(req.cookies.authentication)
 
@@ -84,6 +94,76 @@ app.get('/getFoodByCategory', (req, res) => {
     })
 })
 
+
+app.get('/orders', (req, res) => {
+
+  let orders = {}
+
+  knex('ORDER_HEADER')
+    .where({
+      RESTAURANT_ID:req.query.id,
+    })
+    .select()
+    .then((data) => {
+      console.log('this')
+      let promises = data.map((order) => {
+
+        let orderRecord = {
+          orderId:order.ORDER_ID,
+          orderStatus:order.ORDER_STATUS,
+          orderItems:[],
+          totalPrice:0
+        }
+
+        return new Promise((resolve) => {
+          orders[order.ORDER_ID] = {
+            order:orderRecord
+          }
+          knex('ORDER_ITEM').innerJoin('PRODUCT', 'ORDER_ITEM.PRODUCT_ID', 'PRODUCT.PRODUCT_ID')
+            .where({
+              ORDER_ID:order.ORDER_ID
+            })
+            .select()
+            .then((orderItems) => {
+              orderItems.map((item) => {
+                orders[item.ORDER_ID].order.orderItems.push(item)
+                orderRecord.totalPrice += item.PRODUCT_PRICE * item.QUANTITY
+              })
+              resolve()
+            })
+        })
+      })
+
+      Promise.all(promises).then((data) => {
+        res.json(orders)
+      })
+
+    })
+
+})
+
+app.post('/createOrder', (req, res) => {
+  let orderedItems = req.body.orderedItems
+
+  knex('ORDER_HEADER').insert({RESTAURANT_ID:orderedItems[0].RESTAURANT_ID, ORDER_STATUS:'CREATED'}).then((data) => {
+    if (data) {
+      const orderItems = orderedItems.map((item) => {
+        return new Promise((resolve) => {
+          knex('ORDER_ITEM').insert({ORDER_ID:data[0], QUANTITY:item.quantity, PRODUCT_ID:item.PRODUCT_ID}).then((orderItemRes) => {
+            resolve(orderItemRes)
+            //change to emit to specific later
+            io.sockets.emit('newOrder')
+          })
+        })
+      })
+    }
+  })
+
+
+  Promise.all(orderedItems).then((data) => {
+    res.json({status:STATUSES.SUCCESS})
+  })
+})
 
 app.get('/getRestaurant', (req, res) => {
 
@@ -123,7 +203,7 @@ app.get('/getRestaurants', (req, res) => {
 
 
             //resolve({time:time, distance:distance,distanceVal:distanceVal, 'restaurant':restaurantObject})
-            resolve({ time: '1 min', distance: '0.8 km', distanceVal: 816, restaurant: { restaurantId:5, restaurantName: 'Jutrzenka', restaurantLat: 53.9278264, restaurantLong: 16.2573878 } })
+            resolve({ time: '1 min', distance: '0.8 km', distanceVal: 816, restaurant: { restaurantId:1, restaurantName: 'Jutrzenka', restaurantLat: 53.9278264, restaurantLong: 16.2573878 } })
 
           //})
       })
@@ -327,5 +407,6 @@ app.post('/login', (req, res) => {
 })
 
 
-
-app.listen(port, () => console.log(`server listening on port ${port}!`))
+http.listen(3001, function(){
+  console.log('listening on *:3000');
+});

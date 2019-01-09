@@ -63,7 +63,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `mydb`.`STATUS` ;
 
 CREATE TABLE IF NOT EXISTS `mydb`.`STATUS` (
-  `STATUS_ID` INT NOT NULL AUTO_INCREMENT,
+  `STATUS_ID` VARCHAR(25) NOT NULL,
   `STATUS_DESCRIPTION` VARCHAR(45) NULL,
   PRIMARY KEY (`STATUS_ID`))
 ENGINE = InnoDB;
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`ORDER_HEADER` (
   `RESTAURANT_ID` INT NULL,
   `ORDER_HEADER` VARCHAR(45) NULL,
   `ORDER_ORDERED_BY` INT NULL,
-  `ORDER_STATUS` INT NULL,
+  `ORDER_STATUS` VARCHAR(25) NULL,
   PRIMARY KEY (`ORDER_ID`),
   INDEX `ORD_RESTAURANT_idx` (`RESTAURANT_ID` ASC),
   INDEX `ORD_PERSON_idx` (`ORDER_ORDERED_BY` ASC),
@@ -228,6 +228,16 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 set global sql_mode='';
+-- -----------------------------------------------------
+-- Data for table `mydb`.`STATUS`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `mydb`;
+INSERT INTO `mydb`.`STATUS` (`STATUS_ID`, `STATUS_DESCRIPTION`) VALUES ('CREATED', 'Created');
+INSERT INTO `mydb`.`STATUS` (`STATUS_ID`, `STATUS_DESCRIPTION`) VALUES ('COMPLETED', 'Completed');
+
+COMMIT;
+
 
 -- -----------------------------------------------------
 -- Data for table `mydb`.`MENUTYPE`

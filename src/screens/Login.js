@@ -1,16 +1,12 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
-import Input from '@material-ui/core/Input';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import AppContext from '../components/AppContext'
 import Typography from "@material-ui/core/Typography/Typography";
-import Toolbar from "@material-ui/core/Toolbar/Toolbar";
 import {Link} from 'react-router-dom'
 import Utils from "../components/Utils";
-import Cookies from 'universal-cookie';
 
 const styles = theme => ({
   root: {

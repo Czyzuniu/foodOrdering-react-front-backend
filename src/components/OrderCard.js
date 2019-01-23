@@ -51,27 +51,6 @@ class OrderCard extends Component {
     render() {
 
         const { classes, order } = this.props;
-    //
-    //   <ListItem>
-    //     <Avatar className={classes.blackAvatar}>
-    //       <RestaurantIcon color={'primary'}/>
-    //     </Avatar>
-    //     <ListItemText primary="Sweet Chili Wrap" secondary="x 3" />
-    //   </ListItem>
-    //   <Divider/>
-    //   <ListItem>
-    //   <Avatar className={classes.blackAvatar}>
-    // <LocalDrinkIcon color={'primary'}/>
-    // </Avatar>
-    // <ListItemText primary="Large Pepsi" secondary="Quantity : 1" />
-    //     </ListItem>
-    //   <Divider/>
-    //   <ListItem>
-    //   <Avatar className={classes.blackAvatar}>
-    // <LocalBarIcon color={'primary'} />
-    // </Avatar>
-    // <ListItemText primary="Heineken" secondary="Quantity : 1" />
-    //     </ListItem>
 
         return (
             <Card className={classes.card}>

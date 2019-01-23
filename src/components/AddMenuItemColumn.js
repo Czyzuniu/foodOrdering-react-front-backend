@@ -4,12 +4,17 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
+import DeleteCrossIcon from '@material-ui/icons/Clear';
 import Utils from "./Utils";
+import Button from "@material-ui/core/Button/Button";
+
 
 const styles = theme => ({
   container: {
     display: 'flex',
     flexWrap: 'wrap',
+    justifyContent:'center',
+    backgroundColor:'white'
   },
   textField: {
     marginLeft: theme.spacing.unit,
@@ -20,6 +25,10 @@ const styles = theme => ({
   },
   menu: {
     width: 200,
+  },
+   delete: {
+      display:'flex',
+      alignItems: 'center'
   },
 });
 
@@ -34,7 +43,7 @@ const foodTypes = [
   },
   {
     value: 'MT_DSRT',
-    label: 'Desert',
+    label: 'Dessert',
   },
   {
     value: 'MT_SNK',
@@ -50,11 +59,14 @@ class AddMenuItemColumn extends React.Component {
 
   constructor(props) {
     super(props)
+
+    this.menuItem = this.props.menuItem
+
     this.state = {
-      PRODUCT_NAME:"",
-      PRODUCT_DESCRIPTION:"",
-      PRODUCT_PRICE:"",
-      PRODUCT_MENU_TYPE:foodTypes[0].value,
+      PRODUCT_NAME:!this.menuItem ? "" : this.menuItem.PRODUCT_NAME,
+      PRODUCT_DESCRIPTION:!this.menuItem ? "" : this.menuItem.PRODUCT_DESCRIPTION,
+      PRODUCT_PRICE:!this.menuItem ? "" : this.menuItem.PRODUCT_PRICE,
+      PRODUCT_MENU_TYPE:!this.menuItem ? "" : this.menuItem.PRODUCT_MENU_TYPE,
     }
   }
 
@@ -129,6 +141,12 @@ class AddMenuItemColumn extends React.Component {
             </MenuItem>
           ))}
         </TextField>
+          <div className={classes.delete}>
+              <Button variant="contained" color="secondary" size='large'  onClick={() => {
+              }}>
+                  Delete
+              </Button>
+          </div>
       </form>
     );
   }

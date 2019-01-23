@@ -16,7 +16,7 @@ const styles = {
     margin:10
   },
   button: {
-    margin:20
+    margin:15,
   },
   title: {
     marginBottom: 16,
@@ -73,19 +73,31 @@ class RestaurantCard extends Component {
           </Typography>
         </CardContent>
         <div id='restaurantCardButtonContainer'>
-          <Button variant="contained" color="primary"  className={classes.button} onClick={() => {
+            <Button variant="contained" color="default"  size='small' className={classes.button} onClick={() => {
             this.props.router.push('/addMenu', { restaurantId: restaurant.RESTAURANT_ID})
-          }}>
-            Add menu
-          </Button>
-          <Button variant="contained" color="primary"  className={classes.button}>
-            Edit
-          </Button>
-          <Button variant="contained" color="primary"  className={classes.button} onClick={() => {
+            }}>
+                Add items to menu
+            </Button>
+            <Button variant="contained" color="default" size='small'  className={classes.button} onClick={() => {
+                this.props.router.push('/viewMenu', { restaurantId: restaurant.RESTAURANT_ID})
+            }}>
+                View All Menu items
+            </Button>
+            <Button variant="contained" color="default" size='small' className={classes.button} onClick={() => {
+                this.props.router.push('/editRestaurant', { restaurantId: restaurant.RESTAURANT_ID})
+            }}>
+                Edit restaurant details
+            </Button>
+            <Button variant="contained" color="default" size='small' className={classes.button} onClick={() => {
+                this.props.router.push('/setOpeningTimes', { restaurantId: restaurant.RESTAURANT_ID})
+            }}>
+                Set Opening times
+            </Button>
+            <Button variant="contained" color="default" size='small' className={classes.button} onClick={() => {
             this.props.router.push('/viewOrders', { restaurantId: restaurant.RESTAURANT_ID})
-          }}>
-            View orders
-          </Button>
+            }}>
+                View all current orders
+            </Button>
         </div>
       </Card>
     );

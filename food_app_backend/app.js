@@ -82,7 +82,7 @@ app.get('/myRestaurants', (req, res) => {
     })
 })
 
-app.get('/getFoodByCategory', (req, res) => {
+app.get('/getFoodByCategory', isAuthenticated, (req, res) => {
   knex('PRODUCT')
     .where({
       RESTAURANT_ID:req.query.restaurantId,
@@ -90,8 +90,21 @@ app.get('/getFoodByCategory', (req, res) => {
     })
     .select()
     .then((data) => {
+        console.log(data)
       res.json({menuItems:data})
     })
+})
+
+
+app.get('/getAllMenuItems', isAuthenticated, (req, res) => {
+    knex('PRODUCT')
+        .where({
+            RESTAURANT_ID:req.query.restaurantId,
+        })
+        .select()
+        .then((data) => {
+            res.json({menuItems:data})
+        })
 })
 
 
@@ -244,6 +257,7 @@ app.post('/addRestaurant', isAuthenticated, (req, res) => {
     .then(function(response) {
         let location = response.getBody().results[0].geometry.location
 
+
         const record = {
           'RESTAURANT_NAME':req.body.restaurantName,
           'RESTAURANT_OWNER':JSON.parse(req.user[0].sess).userData,
@@ -255,8 +269,6 @@ app.post('/addRestaurant', isAuthenticated, (req, res) => {
           'RESTAURANT_LATITUDE':location.lat,
           'RESTAURANT_LONGITUDE':location.lng,
         }
-
-        console.log('here', record)
 
         knex('RESTAURANT')
           .insert(record)

@@ -35,7 +35,6 @@ class AddMenu extends Component {
     }
     this.refsCounter = 0
     this.inputRefs = {}
-
   }
 
   addMenuRow = () => {

@@ -65,7 +65,7 @@ class RegisterRestaurant extends Component {
       if (res.status == 'success') {
         this.props.history.push('/restaurants')
       } else {
-        alert('err')
+        alert(res)
       }
     }).catch((err) => {
       console.log(err)

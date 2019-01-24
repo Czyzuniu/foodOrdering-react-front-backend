@@ -7,6 +7,8 @@ import Toolbar from "@material-ui/core/Toolbar/Toolbar";
 import { Link } from 'react-router-dom'
 import Utils from "../components/Utils";
 import socketIOClient from "socket.io-client";
+import Paper from "@material-ui/core/Paper/Paper";
+import AddIcon from "@material-ui/core/SvgIcon/SvgIcon";
 
 
 
@@ -53,9 +55,12 @@ class ViewOrders extends Component {
     this.audio.play()
   }
 
+
+
   componentDidMount() {
     Utils.getData(`${Utils.endPoint}/orders?id=${this.props.history.location.state.restaurantId}`).then((data) => {
       this.setState({orders:data})
+        console.log(this.state)
       this.socket = socketIOClient('http://localhost:3001');
 
       this.socket.on('newOrder', () => {
@@ -71,12 +76,24 @@ class ViewOrders extends Component {
   render() {
     const {classes} = this.props;
 
+    const renderOrders = (
+        Object.keys(this.state.orders).map((ord) => {
+            const order = this.state.orders[ord]
+            return <OrderCard order={order.order}></OrderCard>
+        })
+    )
+
+    const renderNoOrders = (
+        <Paper elevation={3} className={classes.root}>
+            <Typography variant="title" color="inherit" noWrap>
+                No orders yet : (
+            </Typography>
+        </Paper>
+    )
+
     return (
       <div id='content' className={classes.root}>
-        {Object.keys(this.state.orders).map((ord) => {
-          const order = this.state.orders[ord]
-          return <OrderCard order={order.order}></OrderCard>
-        })}
+          {!isEmpty(this.state.orders) ? renderOrders : renderNoOrders}
       </div>
     );
   }
@@ -89,3 +106,10 @@ ViewOrders.propTypes = {
 
 export default withStyles(styles)(ViewOrders);
 
+function isEmpty(obj) {
+    for(var key in obj) {
+        if(obj.hasOwnProperty(key))
+            return false;
+    }
+    return true;
+}

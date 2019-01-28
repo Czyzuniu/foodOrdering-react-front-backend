@@ -84,7 +84,7 @@ class ViewOrders extends Component {
     )
 
     const renderNoOrders = (
-        <Paper elevation={3} className={classes.root}>
+        <Paper elevation={3} >
             <Typography variant="title" color="inherit" noWrap>
                 No orders yet : (
             </Typography>
@@ -93,7 +93,7 @@ class ViewOrders extends Component {
 
     return (
       <div id='content' className={classes.root}>
-          {!isEmpty(this.state.orders) ? renderOrders : renderNoOrders}
+          {renderOrders}
       </div>
     );
   }

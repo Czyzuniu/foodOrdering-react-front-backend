@@ -73,27 +73,22 @@ class RestaurantCard extends Component {
           </Typography>
         </CardContent>
         <div id='restaurantCardButtonContainer'>
-            <Button variant="contained" color="default"  size='small' className={classes.button} onClick={() => {
-            this.props.router.push('/addMenu', { restaurantId: restaurant.RESTAURANT_ID})
-            }}>
-                Add items to menu
-            </Button>
-            <Button variant="contained" color="default" size='small'  className={classes.button} onClick={() => {
+            <Button variant="contained" color="primary" size='small'  className={classes.button} onClick={() => {
                 this.props.router.push('/viewMenu', { restaurantId: restaurant.RESTAURANT_ID})
             }}>
-                View All Menu items
+                Menu
             </Button>
-            <Button variant="contained" color="default" size='small' className={classes.button} onClick={() => {
-                this.props.router.push('/editRestaurant', { restaurantId: restaurant.RESTAURANT_ID})
+            <Button variant="contained" color="primary" size='small' className={classes.button} onClick={() => {
+                this.props.router.push('/setRestaurant', { restaurant: restaurant})
             }}>
                 Edit restaurant details
             </Button>
-            <Button variant="contained" color="default" size='small' className={classes.button} onClick={() => {
+            <Button variant="contained" color="primary" size='small' className={classes.button} onClick={() => {
                 this.props.router.push('/setOpeningTimes', { restaurantId: restaurant.RESTAURANT_ID})
             }}>
                 Set Opening times
             </Button>
-            <Button variant="contained" color="default" size='small' className={classes.button} onClick={() => {
+            <Button variant="contained" color="primary" size='small' className={classes.button} onClick={() => {
             this.props.router.push('/viewOrders', { restaurantId: restaurant.RESTAURANT_ID})
             }}>
                 View all current orders

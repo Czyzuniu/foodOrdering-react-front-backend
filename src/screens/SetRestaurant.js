@@ -42,23 +42,34 @@ const styles = theme => ({
   },
 });
 
-class RegisterRestaurant extends Component {
+class SetRestaurant extends Component {
 
   constructor(props) {
     super(props)
-    this.state = {
-      restaurantName:'',
-      restaurantTableCount:'',
-      allowPreBook:false,
-      street:'',
-      city:'',
-      postalCode:'',
-      openingTime:new Date('2014-08-18T21:11:54'),
-      closingTime:new Date('2014-08-18T21:11:54')
+
+    this.restaurant = this.props.history.location.state.restaurant
+
+    if (this.restaurant) {
+        this.state = {
+            restaurantId:this.restaurant.RESTAURANT_ID,
+            restaurantName:this.restaurant.RESTAURANT_NAME,
+            restaurantTableCount:this.restaurant.RESTAURANT_TABLE_COUNT,
+            allowPreBook:this.restaurant.RESTAURANT_PRE_BOOK,
+            street:this.restaurant.RESTAURANT_STREET,
+            city:this.restaurant.RESTAURANT_CITY,
+            postalCode:this.restaurant.RESTAURANT_POSTCODE,
+        }
+    } else {
+        this.state = {
+            restaurantName:'',
+            restaurantTableCount:'',
+            allowPreBook:false,
+            street:'',
+            city:'',
+            postalCode:'',
+        }
     }
   }
-
-
 
   addRestaurant = () => {
     Utils.postData(`${Utils.endPoint}/addRestaurant`, this.state).then((res) => {
@@ -72,6 +83,18 @@ class RegisterRestaurant extends Component {
     })
   }
 
+    editRestaurant = () => {
+        Utils.postData(`${Utils.endPoint}/editRestaurant`, this.state).then((res) => {
+            if (res.status == 'success') {
+                this.props.history.push('/restaurants')
+            } else {
+                alert(res)
+            }
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+
   render() {
 
     const {classes} = this.props;
@@ -81,7 +104,7 @@ class RegisterRestaurant extends Component {
         <Paper elevation={3} className={classes.root}>
 
           <Typography variant="title" color="inherit" noWrap>
-            Register your restaurant
+              {this.restaurant ? `Edit ${this.restaurant.RESTAURANT_NAME}` : 'Register your restaurant'}
           </Typography>
 
           <div>
@@ -177,9 +200,17 @@ class RegisterRestaurant extends Component {
             />
           </div>
 
-          <Button variant="contained" color={"primary"} className={classes.button} onClick={this.addRestaurant}>
-            Add your restaurant
-          </Button>
+            {!this.restaurant &&
+                <Button variant="contained" color={"primary"} className={classes.button} onClick={this.addRestaurant}>
+                    Create
+                </Button>
+            }
+
+            {this.restaurant &&
+                <Button variant="contained" color={"primary"} className={classes.button} onClick={this.editRestaurant}>
+                    Edit
+                </Button>
+            }
         </Paper>
       </div>
     );
@@ -187,8 +218,8 @@ class RegisterRestaurant extends Component {
 }
 
 
-RegisterRestaurant.propTypes = {
+SetRestaurant.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(RegisterRestaurant);
+export default withStyles(styles)(SetRestaurant);

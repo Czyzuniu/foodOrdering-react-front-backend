@@ -83,14 +83,14 @@ app.get('/myRestaurants', (req, res) => {
 })
 
 app.get('/getFoodByCategory', isAuthenticated, (req, res) => {
-  knex('PRODUCT')
+    knex('PRODUCT')
+    .innerJoin('MENUTYPE', 'PRODUCT.PRODUCT_MENU_TYPE', '=', 'MENUTYPE.MENU_TYPE_ID')
     .where({
       RESTAURANT_ID:req.query.restaurantId,
       PRODUCT_MENU_TYPE:req.query.foodCategory
     })
     .select()
     .then((data) => {
-        console.log(data)
       res.json({menuItems:data})
     })
 })
@@ -98,12 +98,23 @@ app.get('/getFoodByCategory', isAuthenticated, (req, res) => {
 
 app.get('/getAllMenuItems', isAuthenticated, (req, res) => {
     knex('PRODUCT')
+        .innerJoin('MENUTYPE', 'PRODUCT.PRODUCT_MENU_TYPE', '=', 'MENUTYPE.MENU_TYPE_ID')
         .where({
             RESTAURANT_ID:req.query.restaurantId,
         })
         .select()
         .then((data) => {
             res.json({menuItems:data})
+        })
+})
+
+
+app.post('/deleteMenuItems', isAuthenticated, (req, res) => {
+    knex('PRODUCT')
+        .whereIn('PRODUCT_ID', req.body)
+        .delete()
+        .then((data) => {
+            res.json({status:STATUSES.SUCCESS})
         })
 })
 
@@ -118,7 +129,6 @@ app.get('/orders', (req, res) => {
     })
     .select()
     .then((data) => {
-      console.log('this')
       let promises = data.map((order) => {
 
         let orderRecord = {
@@ -230,23 +240,67 @@ app.get('/getRestaurants', (req, res) => {
 
 })
 
-app.post('/addToMenu', (req, res) => {
-  knex('sessions')
-    .where('sid', '=', JSON.parse(req.cookies.authentication).sessionId)
-    .select()
-    .then((user) => {
-      if (user.length) {
-        for (let i of req.body.menuItems) {
-            i.RESTAURANT_ID = req.body.restaurantId
-            knex('PRODUCT').insert(i).then((r) => {
-              console.log(r)
-            })
-        }
-        res.json({'status':STATUSES.SUCCESS})
-      } else {
-        return res.json({'status':'notAuthenticated'})
-      }
+app.post('/saveMenu', isAuthenticated, (req, res) => {
+  // knex('sessions')
+  //   .where('sid', '=', JSON.parse(req.cookies.authentication).sessionId)
+  //   .select()
+  //   .then((user) => {
+  //     if (user.length) {
+  //       for (let i of req.body.menuItems) {
+  //           i.RESTAURANT_ID = req.body.restaurantId
+  //           knex('PRODUCT').insert(i).then((r) => {
+  //             console.log(r)
+  //           })
+  //       }
+  //       res.json({'status':STATUSES.SUCCESS})
+  //     } else {
+  //       return res.json({'status':'notAuthenticated'})
+  //     }
+  //   })
+
+
+    let menuItems = req.body.menuItems
+
+    let promises = menuItems.map((i) => {
+        return new Promise((resolve) => {
+            if (i.isNew) {
+                //create
+
+                let record = {
+                    PRODUCT_NAME: i.PRODUCT_NAME,
+                    PRODUCT_DESCRIPTION: i.PRODUCT_DESCRIPTION,
+                    PRODUCT_PRICE: i.PRODUCT_PRICE,
+                    PRODUCT_MENU_TYPE: i.PRODUCT_MENU_TYPE,
+                    RESTAURANT_ID:req.body.restaurantId
+                }
+
+                knex('PRODUCT').insert(record).then((r) => {
+                    resolve(r)
+                })
+
+            } else {
+                knex('PRODUCT')
+                    .where({
+                        PRODUCT_ID:i.PRODUCT_ID
+                    })
+                    .update({
+                        PRODUCT_NAME: i.PRODUCT_NAME,
+                        PRODUCT_DESCRIPTION: i.PRODUCT_DESCRIPTION,
+                        PRODUCT_PRICE: i.PRODUCT_PRICE,
+                        PRODUCT_MENU_TYPE: i.PRODUCT_MENU_TYPE,
+                    })
+                    .then((r) => {
+                        resolve(r)
+                    })
+            }
+        })
     })
+
+
+    Promise.all(promises).then(() => {
+        res.json({status:STATUSES.SUCCESS})
+    })
+
 })
 
 app.post('/addRestaurant', isAuthenticated, (req, res) => {
@@ -256,8 +310,6 @@ app.post('/addRestaurant', isAuthenticated, (req, res) => {
   requestify.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.GOOGLE_API}`)
     .then(function(response) {
         let location = response.getBody().results[0].geometry.location
-
-
         const record = {
           'RESTAURANT_NAME':req.body.restaurantName,
           'RESTAURANT_OWNER':JSON.parse(req.user[0].sess).userData,
@@ -278,6 +330,35 @@ app.post('/addRestaurant', isAuthenticated, (req, res) => {
 
       }
     );
+})
+
+
+app.post('/editRestaurant', isAuthenticated, (req, res) => {
+
+    let address = `${req.body.city} ${req.body.street} ${req.body.postalCode}`
+
+    requestify.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.GOOGLE_API}`)
+        .then(function(response) {
+                let location = response.getBody().results[0].geometry.location
+                const record = {
+                    'RESTAURANT_NAME':req.body.restaurantName,
+                    'RESTAURANT_POSTCODE':req.body.postalCode,
+                    'RESTAURANT_STREET':req.body.street,
+                    'RESTAURANT_CITY':req.body.city,
+                    'RESTAURANT_TABLE_COUNT':req.body.restaurantTableCount,
+                    'RESTAURANT_PRE_BOOK':req.body.allowPreBook,
+                    'RESTAURANT_LATITUDE':location.lat,
+                    'RESTAURANT_LONGITUDE':location.lng,
+                }
+
+                knex('RESTAURANT')
+                    .update(record)
+                    .then(() => {
+                        return res.json({'status':STATUSES.SUCCESS})
+                    })
+
+            }
+        );
 })
 
 

@@ -144,7 +144,7 @@ class AddMenuItemColumn extends React.Component {
           <div className={classes.delete}>
               <Button variant="contained" color="secondary" size='large'  onClick={() => {
               }}>
-                  Delete
+                  Delete from menu
               </Button>
           </div>
       </form>

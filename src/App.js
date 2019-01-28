@@ -9,7 +9,7 @@ import TopBar from "./components/TopBar";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Login from "./screens/Login";
 import Utils from './components/Utils'
-import RegisterRestaurant from "./screens/RegisterRestaurant";
+import setRestaurant from "./screens/SetRestaurant";
 import AddMenu from "./screens/AddMenu";
 import ViewOrders from "./screens/ViewOrders";
 import ViewMenu from "./screens/ViewMenu";
@@ -44,9 +44,9 @@ class App extends Component {
             <TopBar/>
             <Route exact path="/login" component={Login} />
             <Route path="/register" component={Register} />
-            <PrivateRoute exact path="/" component={Home} />
+            <PrivateRoute exact path="/" component={Restaurants} />
             <PrivateRoute exact path="/restaurants" component={Restaurants} />
-            <PrivateRoute exact path="/registerRestaurant" component={RegisterRestaurant} />
+            <PrivateRoute exact path="/setRestaurant" component={setRestaurant} />
             <PrivateRoute exact path="/addMenu" component={AddMenu} />
             <PrivateRoute exact path="/viewOrders" component={ViewOrders} />
             <PrivateRoute exact path="/viewMenu" component={ViewMenu} />

@@ -47,7 +47,12 @@ class SetRestaurant extends Component {
   constructor(props) {
     super(props)
 
-    this.restaurant = this.props.history.location.state.restaurant
+
+    this.restaurant = null
+
+    if (this.props.history.location.state) {
+      this.restaurant = this.props.history.location.state.restaurant
+    }
 
     if (this.restaurant) {
         this.state = {

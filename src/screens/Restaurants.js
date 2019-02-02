@@ -122,7 +122,7 @@ class Restaurants extends Component {
         { this.state.restaurants.length ?
           <div>
             <Button variant="contained" color={"primary"} className={classes.addButton} onClick={() => {
-              this.props.history.push('/registerRestaurant')
+              this.props.history.push('/setRestaurant')
             }}>
               Add a restaurant
             </Button>

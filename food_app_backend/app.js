@@ -82,7 +82,7 @@ app.get('/myRestaurants', (req, res) => {
     })
 })
 
-app.get('/getFoodByCategory', isAuthenticated, (req, res) => {
+app.get('/getFoodByCategory', (req, res) => {
     knex('PRODUCT')
     .innerJoin('MENUTYPE', 'PRODUCT.PRODUCT_MENU_TYPE', '=', 'MENUTYPE.MENU_TYPE_ID')
     .where({

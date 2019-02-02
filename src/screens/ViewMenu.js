@@ -52,8 +52,11 @@ const styles = theme => ({
         height:'100%'
     },
     root: {
-
+        margin:15,
         marginTop: theme.spacing.unit * 3,
+    },
+    rootMain:{
+      margin:15
     },
     table: {
         minWidth: 1020,
@@ -486,7 +489,7 @@ class ViewMenu extends Component {
                 <Typography variant="subheading" component="h2" style={{color:'white'}}>
                     Show by category
                 </Typography>
-                <Paper elevation={3} className={classes.root}>
+                <Paper elevation={3} className={classes.root} style={{margin:15}}>
                     <List>
                         {foodTypes.map((type) => {
                             return (
@@ -635,7 +638,7 @@ class ViewMenu extends Component {
                         onChangeRowsPerPage={this.handleChangeRowsPerPage}
                     />
                 </Paper>
-                <div className={classes.filler}></div>
+                {/*<div className={classes.filler}></div>*/}
                 <CustomizedNotification innerRef={this.notificationRef} variant={'success'} message={'Menu saved!'}/>
             </div>
         );

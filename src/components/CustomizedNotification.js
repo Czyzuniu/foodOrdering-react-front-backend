@@ -117,12 +117,12 @@ class CustomizedNotification extends React.Component {
             <div>
                 <Snackbar
                     anchorOrigin={{
-                        vertical: 'bottom',
+                        vertical: 'top',
                         horizontal: 'center',
                     }}
                     open={this.state.open}
                     autoHideDuration={3000}
-                    style={{marginBottom:50}}
+                    style={{marginTop:70}}
                     onClose={this.handleClose}
                 >
                     <MySnackbarContentWrapper

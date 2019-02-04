@@ -240,66 +240,52 @@ app.get('/getRestaurants', (req, res) => {
 
 })
 
+app.post('/addProduct', isAuthenticated, (req, res) => {
+
+    let menuItem = req.body.menuItem
+
+    let record = {
+      PRODUCT_NAME: menuItem.PRODUCT_NAME,
+      PRODUCT_DESCRIPTION: menuItem.PRODUCT_DESCRIPTION,
+      PRODUCT_PRICE: menuItem.PRODUCT_PRICE,
+      PRODUCT_MENU_TYPE: menuItem.PRODUCT_MENU_TYPE,
+      RESTAURANT_ID:req.body.restaurantId
+    }
+
+    knex('PRODUCT').insert(record).then((r) => {
+      return res.json({'status':STATUSES.SUCCESS, PRODUCT_ID:r[0]})
+    })
+
+})
+
+
 app.post('/saveMenu', isAuthenticated, (req, res) => {
-  // knex('sessions')
-  //   .where('sid', '=', JSON.parse(req.cookies.authentication).sessionId)
-  //   .select()
-  //   .then((user) => {
-  //     if (user.length) {
-  //       for (let i of req.body.menuItems) {
-  //           i.RESTAURANT_ID = req.body.restaurantId
-  //           knex('PRODUCT').insert(i).then((r) => {
-  //             console.log(r)
-  //           })
-  //       }
-  //       res.json({'status':STATUSES.SUCCESS})
-  //     } else {
-  //       return res.json({'status':'notAuthenticated'})
-  //     }
-  //   })
 
+  let menuItems = req.body.menuItems
 
-    let menuItems = req.body.menuItems
-
-    let promises = menuItems.map((i) => {
-        return new Promise((resolve) => {
-            if (i.isNew) {
-                //create
-
-                let record = {
-                    PRODUCT_NAME: i.PRODUCT_NAME,
-                    PRODUCT_DESCRIPTION: i.PRODUCT_DESCRIPTION,
-                    PRODUCT_PRICE: i.PRODUCT_PRICE,
-                    PRODUCT_MENU_TYPE: i.PRODUCT_MENU_TYPE,
-                    RESTAURANT_ID:req.body.restaurantId
-                }
-
-                knex('PRODUCT').insert(record).then((r) => {
-                    resolve(r)
-                })
-
-            } else {
-                knex('PRODUCT')
-                    .where({
-                        PRODUCT_ID:i.PRODUCT_ID
-                    })
-                    .update({
-                        PRODUCT_NAME: i.PRODUCT_NAME,
-                        PRODUCT_DESCRIPTION: i.PRODUCT_DESCRIPTION,
-                        PRODUCT_PRICE: i.PRODUCT_PRICE,
-                        PRODUCT_MENU_TYPE: i.PRODUCT_MENU_TYPE,
-                    })
-                    .then((r) => {
-                        resolve(r)
-                    })
-            }
+  let promises = menuItems.map((i) => {
+    console.log(i)
+    return new Promise((resolve) => {
+      knex('PRODUCT')
+        .where({
+          PRODUCT_ID:i.PRODUCT_ID
+        })
+        .update({
+          PRODUCT_NAME: i.PRODUCT_NAME,
+          PRODUCT_DESCRIPTION: i.PRODUCT_DESCRIPTION,
+          PRODUCT_PRICE: i.PRODUCT_PRICE,
+          PRODUCT_MENU_TYPE: i.PRODUCT_MENU_TYPE,
+        })
+        .then((r) => {
+          resolve(r)
         })
     })
+  })
 
 
-    Promise.all(promises).then(() => {
-        res.json({status:STATUSES.SUCCESS})
-    })
+  Promise.all(promises).then(() => {
+    res.json({status:STATUSES.SUCCESS})
+  })
 
 })
 

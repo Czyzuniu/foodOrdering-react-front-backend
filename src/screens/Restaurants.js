@@ -97,7 +97,7 @@ class Restaurants extends Component {
         </Typography>
         <div className={classes.btnContainer}>
           <Button variant="contained" color={"primary"} className={classes.addButton} onClick={() => {
-            this.props.history.push('/registerRestaurant')
+            this.props.history.push('/setRestaurant')
           }}>
             Add a restaurant
           </Button>

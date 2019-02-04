@@ -228,6 +228,7 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 set global sql_mode='';
+
 -- -----------------------------------------------------
 -- Data for table `mydb`.`STATUS`
 -- -----------------------------------------------------
@@ -235,6 +236,9 @@ START TRANSACTION;
 USE `mydb`;
 INSERT INTO `mydb`.`STATUS` (`STATUS_ID`, `STATUS_DESCRIPTION`) VALUES ('CREATED', 'Created');
 INSERT INTO `mydb`.`STATUS` (`STATUS_ID`, `STATUS_DESCRIPTION`) VALUES ('COMPLETED', 'Completed');
+INSERT INTO `mydb`.`STATUS` (`STATUS_ID`, `STATUS_DESCRIPTION`) VALUES ('CONFIRMED', 'Confirmed');
+INSERT INTO `mydb`.`STATUS` (`STATUS_ID`, `STATUS_DESCRIPTION`) VALUES ('DECLINED', 'Declined');
+INSERT INTO `mydb`.`STATUS` (`STATUS_ID`, `STATUS_DESCRIPTION`) VALUES ('WTFORCONF', 'Waiting For Confirmation');
 
 COMMIT;
 

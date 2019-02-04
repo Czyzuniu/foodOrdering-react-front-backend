@@ -45,7 +45,7 @@ const styles = theme => ({
         display: 'flex',
         flexDirection: 'column',
         width:'25%',
-        flex:1,
+        flex:2,
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'flex-start',
@@ -74,10 +74,6 @@ const styles = theme => ({
     },
     row: {
         flexDirection:'row'
-    },
-    filler: {
-        display:'flex',
-        flex:1
     }
 
 });
@@ -117,9 +113,9 @@ const foodTypes = [
 
 
 let counter = 0;
-function createData(name, desc, price, cat, dbId, isNew) {
+function createData(name, desc, price, cat, dbId) {
     counter += 1;
-    return { id: counter, PRODUCT_NAME:name, PRODUCT_DESCRIPTION:desc, PRODUCT_PRICE:price, PRODUCT_MENU_TYPE:cat, PRODUCT_ID:dbId, isNew:isNew};
+    return { id: counter, PRODUCT_NAME:name, PRODUCT_DESCRIPTION:desc, PRODUCT_PRICE:price, PRODUCT_MENU_TYPE:cat, PRODUCT_ID:dbId};
 }
 function desc(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -308,7 +304,10 @@ class ViewMenu extends Component {
                 value:'',
                 label:''
             },
-            notificationOpened:false
+            status:{
+              message:'Product Added',
+              type:'success'
+            }
         }
 
         this.notificationRef = React.createRef();
@@ -412,6 +411,7 @@ class ViewMenu extends Component {
         }
         newRecord[col] = e.target.value
         this.setState({data:data})
+
     }
 
     handleChangePage = (event, page) => {
@@ -423,18 +423,37 @@ class ViewMenu extends Component {
     };
 
     addRow = () => {
-        let newRow = createData('','','','',null,true)
-        let newData = this.state.data
-        newData.push(newRow)
 
+        let selectedCategory = this.state.selectedCategory.value ? this.state.selectedCategory.value : "MT_STARTER"
+
+
+        let newRow = createData('','','',selectedCategory,null)
+        let newData = this.state.data
         let lastPage = parseInt(this.state.data.length / this.state.rowsPerPage)
 
-        this.setState({
-            data:newData,
-            page:lastPage
+        let data = {
+          menuItem:newRow,
+          restaurantId:this.props.history.location.state.restaurantId
+        }
+
+
+        Utils.postData(`${Utils.endPoint}/addProduct`,data).then((res) => {
+          if (res.status === 'success') {
+
+            newRow.PRODUCT_ID = res.PRODUCT_ID
+
+            newData.push(newRow)
+            this.setState({
+              status:{type:'success', message:'Product Added'},
+              data:newData
+            })
+
+            this.notificationRef.current.open()
+
+          }
         })
 
-        console.log(this.state.data)
+
     }
 
     onDelete = () => {
@@ -453,6 +472,8 @@ class ViewMenu extends Component {
 
         Utils.postData(`${Utils.endPoint}/deleteMenuItems`,toDelete).then((res) => {
             if (res.status === 'success') {
+                this.setState({status:{type:'success', message:'deleted!'}})
+                this.notificationRef.current.open()
                 if (!this.state.selectedCategory.value) {
                     this.showAllMenuItems()
                 } else {
@@ -470,6 +491,7 @@ class ViewMenu extends Component {
 
         Utils.postData(`${Utils.endPoint}/saveMenu`,data).then((res) => {
             if (res.status === 'success') {
+                this.setState({status:{type:'success', message:'Menu saved!'}})
                 this.notificationRef.current.open()
             }
         })
@@ -552,6 +574,7 @@ class ViewMenu extends Component {
                                                         onChange={(e) => {
                                                             this.handleEdit(e,n.id,'PRODUCT_NAME')
                                                         }}
+                                                        onBlur={this.saveMenu}
                                                         variant="outlined"
                                                     />
                                                 </TableCell>
@@ -566,6 +589,7 @@ class ViewMenu extends Component {
                                                             this.handleEdit(e,n.id,'PRODUCT_DESCRIPTION')
                                                         }}
                                                         variant="outlined"
+                                                        onBlur={this.saveMenu}
                                                     />
                                                 </TableCell>
                                                 <TableCell align="left">
@@ -578,6 +602,7 @@ class ViewMenu extends Component {
                                                             this.handleEdit(e,n.id,'PRODUCT_PRICE')
                                                         }}
                                                         variant="outlined"
+                                                        onBlur={this.saveMenu}
 
                                                     />
                                                 </TableCell>
@@ -591,6 +616,7 @@ class ViewMenu extends Component {
                                                             this.handleEdit(e,n.id,'PRODUCT_MENU_TYPE')
                                                         }}
                                                         variant="outlined"
+                                                        onBlur={this.saveMenu}
                                                     >
                                                         {foodTypes.map((option) => {
                                                             if (option.value != '') {
@@ -639,7 +665,7 @@ class ViewMenu extends Component {
                     />
                 </Paper>
                 {/*<div className={classes.filler}></div>*/}
-                <CustomizedNotification innerRef={this.notificationRef} variant={'success'} message={'Menu saved!'}/>
+                <CustomizedNotification innerRef={this.notificationRef} variant={this.state.status.type} message={this.state.status.message}/>
             </div>
         );
     }

@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import Typography from "@material-ui/core/Typography/Typography";
 import {Link} from 'react-router-dom'
 import Utils from "../components/Utils";
+import CustomizedNotification from "../components/CustomizedNotification";
 
 const styles = theme => ({
   root: {
@@ -51,6 +52,8 @@ class Login extends Component {
       password: '',
       isAuthenticated:false
     }
+
+    this.notificationRef = React.createRef();
   }
 
   componentWillMount() {
@@ -71,7 +74,7 @@ class Login extends Component {
         document.cookie = 'authentication=' + JSON.stringify({sessionId: data.sessionId, userId: data.authenticatedUser.id})
         Utils.navigate('/')
       } else {
-        alert('wrong email or password')
+        this.notificationRef.current.open()
       }
     })
   }
@@ -128,6 +131,7 @@ class Login extends Component {
           :
           renderLoginPage
         }
+        <CustomizedNotification innerRef={this.notificationRef} variant={'error'} message={'Incorrect password or email'}/>
       </div>
     );
   }

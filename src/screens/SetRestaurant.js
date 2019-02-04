@@ -47,7 +47,6 @@ class SetRestaurant extends Component {
   constructor(props) {
     super(props)
 
-
     this.restaurant = null
 
     if (this.props.history.location.state) {
@@ -76,17 +75,17 @@ class SetRestaurant extends Component {
     }
   }
 
-  addRestaurant = () => {
-    Utils.postData(`${Utils.endPoint}/addRestaurant`, this.state).then((res) => {
-      if (res.status == 'success') {
-        this.props.history.push('/restaurants')
-      } else {
-        alert(res)
-      }
-    }).catch((err) => {
-      console.log(err)
-    })
-  }
+    addRestaurant = () => {
+      Utils.postData(`${Utils.endPoint}/addRestaurant`, this.state).then((res) => {
+        if (res.status == 'success') {
+          this.props.history.push('/restaurants')
+        } else {
+          alert(res)
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    }
 
     editRestaurant = () => {
         Utils.postData(`${Utils.endPoint}/editRestaurant`, this.state).then((res) => {

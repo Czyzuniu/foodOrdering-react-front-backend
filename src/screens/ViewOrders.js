@@ -73,13 +73,17 @@ class ViewOrders extends Component {
     })
   }
 
+  onOrderConfirm = () => {
+
+  }
+
   render() {
     const {classes} = this.props;
 
     const renderOrders = (
         Object.keys(this.state.orders).map((ord) => {
             const order = this.state.orders[ord]
-            return <OrderCard order={order.order}></OrderCard>
+            return <OrderCard order={order.order} onOrderConfirm={(order) => this.onOrderConfirm()} ></OrderCard>
         })
     )
 

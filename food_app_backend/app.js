@@ -168,7 +168,7 @@ app.get('/orders', (req, res) => {
 app.post('/createOrder', (req, res) => {
   let orderedItems = req.body.orderedItems
 
-  knex('ORDER_HEADER').insert({RESTAURANT_ID:orderedItems[0].RESTAURANT_ID, ORDER_STATUS:'CREATED'}).then((data) => {
+  knex('ORDER_HEADER').insert({RESTAURANT_ID:orderedItems[0].RESTAURANT_ID, ORDER_STATUS:'WTFORCONF'}).then((data) => {
     if (data) {
       const orderItems = orderedItems.map((item) => {
         return new Promise((resolve) => {

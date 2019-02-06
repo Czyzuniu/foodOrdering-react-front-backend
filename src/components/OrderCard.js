@@ -21,8 +21,10 @@ const styles = {
     card: {
         maxWidth: 275,
         maxHeight:400,
-        minHeight:300,
-        margin:10
+        minHeight:400,
+        margin:10,
+        display:'flex',
+        flexDirection:'column'
     },
     button: {
         margin:20
@@ -46,21 +48,29 @@ class OrderCard extends Component {
     constructor(props) {
         super(props)
 
+        const {order} = this.props
+
+
+        this.state = {
+          order:order,
+          status:order.orderStatus
+        }
+
     }
 
     render() {
-
         const { classes, order } = this.props;
-
         return (
             <Card className={classes.card}>
-                <CardContent>
+                <CardContent style={{flex:1,display: 'flex',flexDirection:'column',justifyContent: 'space-evenly'}}>
                     <Typography variant="headline" component="h2">
                         Order Number : {order.orderId}
                     </Typography>
+                    <Typography variant="subtitle2" component="h2">
+                      Order Status : {this.state.status}
+                    </Typography>
                     <List>
                       {order.orderItems.map((item) => {
-                        console.log(item)
                         return (
                           <ListItem>
                             <Avatar className={classes.blackAvatar}>
@@ -76,9 +86,14 @@ class OrderCard extends Component {
                         Total Price : £ {order.totalPrice.toFixed(2)}
                     </Typography>
                 </CardContent>
-                <Button variant="contained" color="primary"  className={classes.button}>
-                    Complete Order
+              <div>
+                <Button variant="contained" color="primary"  className={classes.button} onClick={this.props.onOrderConfirm}>
+                  Confirm order
                 </Button>
+                <Button variant="contained" color="primary"  className={classes.button}>
+                  Decline order
+                </Button>
+              </div>
             </Card>
         );
     }

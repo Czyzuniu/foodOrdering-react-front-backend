@@ -629,14 +629,13 @@ class ViewMenu extends Component {
                                                         })}
                                                     </TextField>
                                                 </TableCell>
-                                                {/*<TableCell align="left">*/}
-                                                    {/*<Chips chipData={[*/}
-                                                        {/*{ key: 0, label: 'Angular' },*/}
-                                                        {/*{ key: 1, label: 'jQuery' },*/}
-                                                        {/*{ key: 2, label: 'Polymer' },*/}
-                                                        {/*{ key: 3, label: 'React' }*/}
-                                                    {/*]}></Chips>*/}
-                                                {/*</TableCell>*/}
+                                                <TableCell align="left">
+                                                    <Chips chipData={[
+                                                        { key: 0, label: 'Nuts' },
+                                                        { key: 1, label: 'Gluten' },
+                                                        { key: 2, label: 'Wheat' }
+                                                    ]}></Chips>
+                                                </TableCell>
                                             </TableRow>
                                         );
                                     })}

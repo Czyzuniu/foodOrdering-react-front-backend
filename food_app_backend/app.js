@@ -124,16 +124,19 @@ app.get('/orders', (req, res) => {
   let orders = {}
 
   knex('ORDER_HEADER')
+    .innerJoin('STATUS', 'ORDER_HEADER.ORDER_STATUS', 'STATUS.STATUS_ID')
     .where({
       RESTAURANT_ID:req.query.id,
     })
     .select()
     .then((data) => {
       let promises = data.map((order) => {
-
         let orderRecord = {
           orderId:order.ORDER_ID,
-          orderStatus:order.ORDER_STATUS,
+          orderStatus: {
+              id:order.ORDER_STATUS,
+              desc:order.STATUS_DESCRIPTION
+          },
           orderItems:[],
           totalPrice:0
         }

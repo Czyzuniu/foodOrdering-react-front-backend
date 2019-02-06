@@ -20,7 +20,8 @@ const styles = theme => ({
     display: 'flex',
     flexDirection: 'column',
     width: '40%',
-    height:'15%'
+    height:'15%',
+    borderRadius:25
   },
   addButton: {
     height: '80',
@@ -92,16 +93,16 @@ class Restaurants extends Component {
 
     const renderNoRestaurantWindow = (
       <Paper elevation={3} className={classes.rootInitial}>
-        <Typography variant="title"  color="inherit" noWrap>
-          You currently not own any restaurant
-        </Typography>
-        <div className={classes.btnContainer}>
-          <Button variant="contained" color={"primary"} className={classes.addButton} onClick={() => {
-            this.props.history.push('/setRestaurant')
-          }}>
-            Add a restaurant
-          </Button>
-        </div>
+          <Typography variant="title"  color="inherit" noWrap>
+              Seems like you do not own any restaurants yet.
+          </Typography>
+          <div className={classes.btnContainer}>
+              <Button variant="contained" color={"primary"} className={classes.addButton} onClick={() => {
+                  this.props.history.push('/setRestaurant')
+              }}>
+                  Add a restaurant
+              </Button>
+          </div>
       </Paper>
     )
 

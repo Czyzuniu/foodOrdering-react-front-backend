@@ -45,7 +45,7 @@ const styles = theme => ({
         display: 'flex',
         flexDirection: 'column',
         width:'25%',
-        flex:2,
+        flex:0.5,
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'flex-start',

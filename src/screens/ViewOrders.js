@@ -60,7 +60,6 @@ class ViewOrders extends Component {
   componentDidMount() {
     Utils.getData(`${Utils.endPoint}/orders?id=${this.props.history.location.state.restaurantId}`).then((data) => {
       this.setState({orders:data})
-        console.log(this.state)
       this.socket = socketIOClient('http://localhost:3001');
 
       this.socket.on('newOrder', () => {

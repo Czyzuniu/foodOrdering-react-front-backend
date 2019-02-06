@@ -20,8 +20,7 @@ import Divider from '@material-ui/core/Divider';
 const styles = {
     card: {
         maxWidth: 275,
-        maxHeight:400,
-        minHeight:400,
+        maxHeight:410, 
         margin:10,
         display:'flex',
         flexDirection:'column'
@@ -56,6 +55,8 @@ class OrderCard extends Component {
           status:order.orderStatus
         }
 
+        console.log(order)
+
     }
 
     render() {
@@ -67,7 +68,7 @@ class OrderCard extends Component {
                         Order Number : {order.orderId}
                     </Typography>
                     <Typography variant="subtitle2" component="h2">
-                      Order Status : {this.state.status}
+                      Order Status : {this.state.status.desc}
                     </Typography>
                     <List>
                       {order.orderItems.map((item) => {

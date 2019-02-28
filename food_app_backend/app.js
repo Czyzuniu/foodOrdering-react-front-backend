@@ -1,18 +1,46 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 var cookieParser = require('cookie-parser');
+const multer  = require('multer')
 var session = require('express-session');
 const cors = require('cors')
+const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path')
 const KnexSessionStore = require('connect-session-knex')(session);
+const mime = require('mime');
 require('dotenv').config({ path: './vars.env' })
 var requestify = require('requestify');
-
 //refactor later authentication check repetition
 
 const STATUSES = {
   'SUCCESS':'success',
   'FAILED':'failed'
 }
+
+// const storage = multer.diskStorage({
+//   destination: './uploads/',
+//   filename: function (req, file, cb) {
+//     crypto.pseudoRandomBytes(16, function (err, raw) {
+//       if (err) return cb(err)
+//
+//       //CHECK PATHS LATER
+//       cb(null, raw.toString('hex') + path.extname(file.originalname))
+//     })
+//   }
+// })
+//
+// const uploader = multer({ storage: storage })
+
+
+const uploader = multer({
+  dest: "uploads/",
+  limits: {
+    fields: 10,
+    fileSize: 1024*1024*20,
+    files: 1,
+  }
+});
 
 const port = 3001
 
@@ -29,7 +57,7 @@ app.use(cookieParser())
 app.use(cors({credentials: true, origin: true}))
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
+app.use(express.static(path.join(__dirname, 'public')));
 
 const knex = require('knex')({
   client: 'mysql',
@@ -83,17 +111,24 @@ app.get('/myRestaurants', (req, res) => {
 })
 
 app.get('/getFoodByCategory', (req, res) => {
-    knex('PRODUCT')
+  let isWebAppMenu = req.query.isWebApp
+  let query = knex('PRODUCT')
     .innerJoin('MENUTYPE', 'PRODUCT.PRODUCT_MENU_TYPE', '=', 'MENUTYPE.MENU_TYPE_ID')
     .where({
-      RESTAURANT_ID:req.query.restaurantId,
-      PRODUCT_MENU_TYPE:req.query.foodCategory
+      RESTAURANT_ID: req.query.restaurantId,
+      PRODUCT_MENU_TYPE: req.query.foodCategory
     })
-    .select()
+
+  if (!isWebAppMenu) {
+    query.andWhereRaw('PRODUCT_NAME != "" AND PRODUCT_DESCRIPTION != "" AND PRODUCT_PRICE != "NULL"')
+  }
+
+  query.select()
     .then((data) => {
       res.json({menuItems:data})
     })
 })
+
 
 
 app.get('/getAllMenuItems', isAuthenticated, (req, res) => {
@@ -192,12 +227,85 @@ app.post('/createOrder', (req, res) => {
 })
 
 app.get('/getRestaurant', (req, res) => {
-
   knex('RESTAURANT')
     .where('RESTAURANT_ID','=', req.query.id)
     .select()
-    .then((data) => {
-      res.json(data)
+    .then((restaurantData) => {
+      let resData = restaurantData[0]
+      knex('RESTAURANT_IMAGE')
+        .where('RESTAURANT_ID','=', req.query.id)
+        .select()
+        .then((images) => {
+          knex('REVIEW')
+            .avg({avgReview:'REVIEW_RATING' })
+            .where({RESTAURANT_ID: req.query.id})
+            .select()
+            .then((avg) => {
+              resData.avgReview = avg[0]
+              res.json({resData, images})
+            })
+        })
+    })
+})
+
+app.get('/getMultipleRestaurants', (req, res) => {
+  knex('RESTAURANT')
+    .whereIn('RESTAURANT_ID',Array.from(req.query.ids))
+    .select()
+    .then((restaurants) => {
+      res.json(restaurants)
+    })
+})
+
+
+app.post('/submitReview', (req, res) => {
+
+  let record = {
+    RESTAURANT_ID: req.body.restaurantId,
+    REVIEW_PERSON_ID: req.body.profileId,
+    REVIEW_RATING:req.body.rating,
+    REVIEW_COMMENTS:req.body.comments
+  }
+
+  knex('REVIEW')
+    .where({
+      RESTAURANT_ID: req.body.restaurantId,
+      REVIEW_PERSON_ID: req.body.profileId,
+    })
+    .select()
+    .then((review) => {
+      console.log(review)
+      if (review.length) {
+        knex('REVIEW')
+          .update(record).then(() => {
+            res.json({status:STATUSES.SUCCESS})
+          })
+      } else {
+        console.log('creating review')
+        knex('REVIEW')
+          .insert(record).then((rev) => {
+            console.log(rev)
+            res.json({status:STATUSES.SUCCESS})
+          })
+      }
+    })
+
+})
+
+
+app.get('/getMyReview', (req, res) => {
+  let myReview = []
+  knex('REVIEW')
+    .where({
+      RESTAURANT_ID: req.query.restaurantId,
+      REVIEW_PERSON_ID: req.query.profileId,
+    })
+    .select()
+    .then((review) => {
+      if (review) {
+        myReview = review[0]
+      }
+      res.json({myReview:myReview})
     })
 })
 
@@ -211,36 +319,32 @@ app.get('/getRestaurants', (req, res) => {
 
       return new Promise((resolve) => {
 
-        let url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${lat},${lng}&destinations=${restaurant.RESTAURANT_LATITUDE},${restaurant.RESTAURANT_LONGITUDE}&key=${process.env.GOOGLE_API}`
-        requestify.get(url)
-          .then(function(response) {
-            let distanceMatrix = response.getBody().rows[0].elements[0]
-            let distance = distanceMatrix.distance.text
-            let distanceVal = distanceMatrix.distance.value
-            let time = distanceMatrix.duration.text
+        // let url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${lat},${lng}&destinations=${restaurant.RESTAURANT_LATITUDE},${restaurant.RESTAURANT_LONGITUDE}&key=${process.env.GOOGLE_API}`
+        // requestify.get(url)
+        //   .then(function(response) {
+        //     let distanceMatrix = response.getBody().rows[0].elements[0]
+        //     let distance = distanceMatrix.distance.text
+        //     let distanceVal = distanceMatrix.distance.value
+        //     let time = distanceMatrix.duration.text
+        //
+        //     let restaurantObject = {
+        //      restaurantId:restaurant.RESTAURANT_ID,
+        //       restaurantName:restaurant.RESTAURANT_NAME,
+        //       restaurantLat:restaurant.RESTAURANT_LATITUDE,
+        //       restaurantLong:restaurant.RESTAURANT_LONGITUDE,
+        //     }
+        //
+        //     resolve({time:time, distance:distance,distanceVal:distanceVal, 'restaurant':restaurantObject})
+        //   })
 
-            let restaurantObject = {
-             restaurantId:restaurant.RESTAURANT_ID,
-              restaurantName:restaurant.RESTAURANT_NAME,
-              restaurantLat:restaurant.RESTAURANT_LATITUDE,
-              restaurantLong:restaurant.RESTAURANT_LONGITUDE,
-            }
-
-            resolve({time:time, distance:distance,distanceVal:distanceVal, 'restaurant':restaurantObject})
-            //resolve({ time: '1 min', distance: '0.8 km', distanceVal: 816, restaurant: { restaurantId:1, restaurantName: 'Jutrzenka', restaurantLat: 53.9278264, restaurantLong: 16.2573878 } })
-
-          })
+        resolve({ time: '1 min', distance: '0.8 km', distanceVal: 816, restaurant: restaurant })
       })
     })
-
 
     Promise.all(requests).then((data) => {
       res.json(JSON.stringify({results:data}))
     })
   })
-
-
-
 })
 
 app.post('/addProduct', isAuthenticated, (req, res) => {
@@ -258,6 +362,68 @@ app.post('/addProduct', isAuthenticated, (req, res) => {
     knex('PRODUCT').insert(record).then((r) => {
       return res.json({'status':STATUSES.SUCCESS, PRODUCT_ID:r[0]})
     })
+
+})
+
+
+app.get('/getAllReviews', isAuthenticated, (req, res) => {
+
+  console.log('yep', req.query.restaurantId)
+
+  let restaurantId = req.query.restaurantId
+
+  knex('REVIEW')
+    .where({RESTAURANT_ID:restaurantId})
+    .select().then((data) => {
+    return res.json(data)
+  })
+
+})
+
+
+app.post('/addPhoto', uploader.single('uploadedFile'), (req, res) => {
+
+  console.log(req.file, req.body)
+
+  const fileName = req.file.filename + '.' + req.file.mimetype.split('/')[1];
+  var target_path = './public/images/' + fileName
+
+  fs.rename(req.file.path, target_path, function (err) {
+    const record = {
+      'RESTAURANT_ID':req.body.restaurantId,
+      'PATH':'/images/' + fileName,
+    }
+
+    knex('RESTAURANT_IMAGE')
+      .insert(record)
+      .then(() => {
+        return res.json({'status':STATUSES.SUCCESS})
+      })
+
+  })
+
+})
+
+
+app.get('/restaurantImages', isAuthenticated, (req, res) => {
+
+  console.log(req.file, req.body)
+
+  knex('RESTAURANT_IMAGE')
+    .select()
+    .where({
+      RESTAURANT_ID:req.query.restaurantId
+    })
+    .then((data) => {
+      let images = []
+      data.map((img) => {
+        let prefix = 'localhost:3001'
+        let final = prefix + img.PATH
+        images.push({imgPath:final})
+      })
+      return res.json(images)
+    })
+
 
 })
 
@@ -295,10 +461,12 @@ app.post('/saveMenu', isAuthenticated, (req, res) => {
 app.post('/addRestaurant', isAuthenticated, (req, res) => {
 
   let address = `${req.body.city} ${req.body.street} ${req.body.postalCode}`
+  let categories = req.body.categories.join(',')
 
   requestify.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.GOOGLE_API}`)
     .then(function(response) {
         let location = response.getBody().results[0].geometry.location
+
         const record = {
           'RESTAURANT_NAME':req.body.restaurantName,
           'RESTAURANT_OWNER':JSON.parse(req.user[0].sess).userData,
@@ -309,6 +477,7 @@ app.post('/addRestaurant', isAuthenticated, (req, res) => {
           'RESTAURANT_PRE_BOOK':req.body.allowPreBook,
           'RESTAURANT_LATITUDE':location.lat,
           'RESTAURANT_LONGITUDE':location.lng,
+          'RESTAURANT_CATEGORIES':categories,
         }
 
         knex('RESTAURANT')
@@ -325,6 +494,7 @@ app.post('/addRestaurant', isAuthenticated, (req, res) => {
 app.post('/editRestaurant', isAuthenticated, (req, res) => {
 
     let address = `${req.body.city} ${req.body.street} ${req.body.postalCode}`
+    let categories = req.body.categories.join(',')
 
     requestify.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.GOOGLE_API}`)
         .then(function(response) {
@@ -338,6 +508,7 @@ app.post('/editRestaurant', isAuthenticated, (req, res) => {
                     'RESTAURANT_PRE_BOOK':req.body.allowPreBook,
                     'RESTAURANT_LATITUDE':location.lat,
                     'RESTAURANT_LONGITUDE':location.lng,
+                    'RESTAURANT_CATEGORIES':categories,
                 }
 
                 knex('RESTAURANT')
@@ -442,8 +613,6 @@ app.post('/register', (req, res) => {
       res.json({status:STATUSES.FAILED});
     })
   });
-
-
 })
 
 app.post('/login', (req, res) => {

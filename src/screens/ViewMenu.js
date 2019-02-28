@@ -324,7 +324,7 @@ class ViewMenu extends Component {
         let records = []
 
         if (type.value != '') {
-            Utils.getData(`${Utils.endPoint}/getFoodByCategory?restaurantId=${this.state.restaurantId}&foodCategory=${type.value}`).then((res) => {
+            Utils.getData(`${Utils.endPoint}/getFoodByCategory?restaurantId=${this.state.restaurantId}&foodCategory=${type.value}&isWebApp=true`).then((res) => {
                 res.menuItems.map((item) => {
                     records.push(createData(item.PRODUCT_NAME, item.PRODUCT_DESCRIPTION, item.PRODUCT_PRICE, item.PRODUCT_MENU_TYPE,item.PRODUCT_ID,false))
                 })

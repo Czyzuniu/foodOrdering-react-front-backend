@@ -6,6 +6,9 @@ import Paper from "@material-ui/core/Paper/Paper";
 import Typography from "@material-ui/core/Typography/Typography";
 import Button from "@material-ui/core/Button/Button";
 import TextField from "@material-ui/core/TextField/TextField";
+import MenuItem from "@material-ui/core/MenuItem/MenuItem";
+import Select from "@material-ui/core/Select/Select"
+import InputLabel from "@material-ui/core/InputLabel/InputLabel"
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -62,15 +65,18 @@ class SetRestaurant extends Component {
             street:this.restaurant.RESTAURANT_STREET,
             city:this.restaurant.RESTAURANT_CITY,
             postalCode:this.restaurant.RESTAURANT_POSTCODE,
+            categories:this.restaurant.RESTAURANT_CATEGORIES.split(',')
+
         }
     } else {
         this.state = {
-            restaurantName:'',
-            restaurantTableCount:'',
-            allowPreBook:false,
-            street:'',
-            city:'',
-            postalCode:'',
+          restaurantName:'',
+          restaurantTableCount:'',
+          allowPreBook:false,
+          street:'',
+          city:'',
+          postalCode:'',
+          categories:[]
         }
     }
   }
@@ -102,6 +108,14 @@ class SetRestaurant extends Component {
   render() {
 
     const {classes} = this.props;
+
+    const categories = [
+      'Mexican',
+      'Polish',
+      'British',
+      'Chinese',
+      'American',
+    ];
 
     return (
       <div id='content'>
@@ -139,6 +153,24 @@ class SetRestaurant extends Component {
                 })
               }}
             />
+
+            <div style={{display:'flex', flexDirection:'column'}}>
+              <InputLabel style={{alignSelf:'flex-start',marginLeft:80}}>Food cuisines</InputLabel>
+              <Select
+                multiple
+                value={this.state.categories}
+                className={classes.inputCenter}
+                onChange={(event) => {
+                  this.setState({ categories: event.target.value });
+                }}
+              >
+                {categories.map(name => (
+                  <MenuItem key={name} value={name}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </div>
           </div>
 
           <div>

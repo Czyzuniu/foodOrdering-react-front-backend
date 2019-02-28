@@ -19,6 +19,26 @@ code {
 }
 
 
+.half-center {
+    display: flex;
+    flex:1;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    width: 100%;
+}
+
+.quarter-center {
+    display: flex;
+    flex:3;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    width: 100%;
+}
+
+
+
 #content {
     height: 94vh;
     display: flex;

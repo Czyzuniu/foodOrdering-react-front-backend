@@ -40,6 +40,23 @@ class Utills {
     })
   }
 
+  uploadImg(url, data) {
+    return new Promise((resolve, reject) => {
+      fetch(url, {
+        method: 'POST',
+        credentials: 'include',
+        body: data,
+      }).then(function (res) {
+        console.log(res)
+        return res.json()
+      }).then((data) => {
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      });
+    })
+  }
+
   getData(url) {
     return new Promise((resolve, reject) => {
       fetch(url, {

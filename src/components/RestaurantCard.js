@@ -73,26 +73,36 @@ class RestaurantCard extends Component {
           </Typography>
         </CardContent>
         <div id='restaurantCardButtonContainer'>
-            <Button variant="contained" color="primary" size='small'  className={classes.button} onClick={() => {
-                this.props.router.push('/viewMenu', { restaurantId: restaurant.RESTAURANT_ID})
-            }}>
-                Menu
-            </Button>
-            <Button variant="contained" color="primary" size='small' className={classes.button} onClick={() => {
-                this.props.router.push('/setRestaurant', { restaurant: restaurant})
-            }}>
-                Edit restaurant details
-            </Button>
-            <Button variant="contained" color="primary" size='small' className={classes.button} onClick={() => {
-                this.props.router.push('/setOpeningTimes', { restaurantId: restaurant.RESTAURANT_ID})
-            }}>
-                Set Opening times
-            </Button>
-            <Button variant="contained" color="primary" size='small' className={classes.button} onClick={() => {
-            this.props.router.push('/viewOrders', { restaurantId: restaurant.RESTAURANT_ID})
-            }}>
-                View all current orders
-            </Button>
+          <Button variant="contained" color="primary" size='small'  className={classes.button} onClick={() => {
+              this.props.router.push('/viewMenu', { restaurantId: restaurant.RESTAURANT_ID})
+          }}>
+              Menu
+          </Button>
+          <Button variant="contained" color="primary" size='small' className={classes.button} onClick={() => {
+              this.props.router.push('/setRestaurant', { restaurant: restaurant})
+          }}>
+              Edit restaurant details
+          </Button>
+          <Button variant="contained" color="primary" size='small' className={classes.button} onClick={() => {
+              this.props.router.push('/setOpeningTimes', { restaurantId: restaurant.RESTAURANT_ID})
+          }}>
+              Set opening times
+          </Button>
+          <Button variant="contained" color="primary" size='small' className={classes.button} onClick={() => {
+          this.props.router.push('/viewOrders', { restaurantId: restaurant.RESTAURANT_ID})
+          }}>
+              View all current orders
+          </Button>
+          <Button variant="contained" color="primary" size='small' className={classes.button} onClick={() => {
+            this.props.router.push('/addPhotos', { restaurantId: restaurant.RESTAURANT_ID})
+          }}>
+            Add Photos
+          </Button>
+          <Button variant="contained" color="primary" size='small' className={classes.button} onClick={() => {
+            this.props.router.push('/reviews', { restaurantId: restaurant.RESTAURANT_ID})
+          }}>
+            View reviews
+          </Button>
         </div>
       </Card>
     );

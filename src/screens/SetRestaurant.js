@@ -76,9 +76,19 @@ class SetRestaurant extends Component {
           street:'',
           city:'',
           postalCode:'',
-          categories:[]
+          categories:[],
+          selectedCategories:[]
         }
     }
+  }
+
+
+  componentDidMount() {
+    Utils.getFoodCategories().then((data) => {
+      this.setState({
+        categories:data
+      })
+    })
   }
 
     addRestaurant = () => {
@@ -108,14 +118,6 @@ class SetRestaurant extends Component {
   render() {
 
     const {classes} = this.props;
-
-    const categories = [
-      'Mexican',
-      'Polish',
-      'British',
-      'Chinese',
-      'American',
-    ];
 
     return (
       <div id='content'>
@@ -158,15 +160,15 @@ class SetRestaurant extends Component {
               <InputLabel style={{alignSelf:'flex-start',marginLeft:80}}>Food cuisines</InputLabel>
               <Select
                 multiple
-                value={this.state.categories}
+                value={this.state.selectedCategories}
                 className={classes.inputCenter}
                 onChange={(event) => {
-                  this.setState({ categories: event.target.value });
+                  this.setState({ selectedCategories: event.target.value });
                 }}
               >
-                {categories.map(name => (
-                  <MenuItem key={name} value={name}>
-                    {name}
+                {this.state.categories.map(c => (
+                  <MenuItem key={c.CATEGORY_ID} value={c.CATEGORY_ID}>
+                    {c.CATEGORY_DESCRIPTION}
                   </MenuItem>
                 ))}
               </Select>

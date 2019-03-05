@@ -17,6 +17,7 @@ import SetOpeningTimes from "./screens/SetOpeningTimes";
 import EditRestaurant from "./screens/EditRestaurant";
 import AddPhotos from "./screens/AddPhotos";
 import Reviews from "./screens/Reviews";
+import ViewPhoto from "./screens/ViewPhoto";
 
 
 
@@ -58,6 +59,7 @@ class App extends Component {
             <PrivateRoute exact path="/setOpeningTimes" component={SetOpeningTimes} />
             <PrivateRoute exact path="/editRestaurant" component={EditRestaurant} />
             <PrivateRoute exact path="/reviews" component={Reviews} />
+            <PrivateRoute exact path="/viewPhoto" component={ViewPhoto} />
           </div>
         </BrowserRouter>
       </div>

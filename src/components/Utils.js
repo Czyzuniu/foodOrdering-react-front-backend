@@ -30,13 +30,20 @@ class Utills {
         credentials: 'include',
         body: JSON.stringify(data),
       }).then(function (res) {
-        console.log(res)
         return res.json()
       }).then((data) => {
         resolve(data)
       }).catch(error => {
         reject(error)
       });
+    })
+  }
+
+  getFoodAllergies() {
+    return new Promise((resolve) => {
+      this.getData(`${this.endPoint}/getFoodAllergies`).then((res) => {
+        resolve(res)
+      })
     })
   }
 
@@ -47,13 +54,20 @@ class Utills {
         credentials: 'include',
         body: data,
       }).then(function (res) {
-        console.log(res)
         return res.json()
       }).then((data) => {
         resolve(data)
       }).catch(error => {
         reject(error)
       });
+    })
+  }
+
+  getFoodCategories() {
+    return new Promise((resolve) => {
+      this.getData(`${this.endPoint}/getCategories`).then((res) => {
+        resolve(res)
+      })
     })
   }
 
@@ -64,7 +78,6 @@ class Utills {
         headers: new Headers({'content-type': 'application/json'}),
         credentials: 'include'
       }).then(function (res) {
-        console.log(res)
         return res.json()
       }).then((data) => {
         resolve(data)

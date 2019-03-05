@@ -14,13 +14,17 @@ import RestaurantIcon from '@material-ui/icons/Restaurant';
 import LocalDrinkIcon from '@material-ui/icons/LocalDrink';
 import LocalBarIcon from '@material-ui/icons/LocalBar';
 import Divider from '@material-ui/core/Divider';
-
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from "@material-ui/core/TextField/TextField";
+import Draggable, {DraggableCore} from 'react-draggable';
 
 
 const styles = {
     card: {
-        maxWidth: 275,
-        maxHeight:410, 
         margin:10,
         display:'flex',
         flexDirection:'column'
@@ -47,55 +51,132 @@ class OrderCard extends Component {
     constructor(props) {
         super(props)
 
-        const {order} = this.props
-
+        const {order,socket} = this.props
 
         this.state = {
           order:order,
-          status:order.orderStatus
+          status:order.orderStatus,
+          declineDialogOpen:false,
+          reason:''
         }
 
-        console.log(order)
+        this.socket = socket
 
+    }
+
+    confirmOrder = () => {
+        this.socket.emit('confirmOrder', {toSocketId:this.state.order.from, orderId:this.state.order.orderId, status:'CONFIRMED'})
+    }
+
+    declineOrder = () => {
+        this.socket.emit('declineOrder', {toSocketId:this.state.order.from, orderId:this.state.order.orderId, status:'DECLINED',
+          reason:this.state.reason})
+        this.setState({
+          declineDialogOpen:false
+        })
+    }
+
+    completeOrder = () => {
+      this.socket.emit('completeOrder', {toSocketId:this.state.order.from, orderId:this.state.order.orderId, status:'COMPLETED'})
+    }
+
+    declineDialogClose = () => {
+      this.setState({
+        declineDialogOpen:false
+      })
     }
 
     render() {
         const { classes, order } = this.props;
         return (
+          <Draggable >
             <Card className={classes.card}>
-                <CardContent style={{flex:1,display: 'flex',flexDirection:'column',justifyContent: 'space-evenly'}}>
-                    <Typography variant="headline" component="h2">
-                        Order Number : {order.orderId}
-                    </Typography>
-                    <Typography variant="subtitle2" component="h2">
-                      Order Status : {this.state.status.desc}
-                    </Typography>
-                    <List>
-                      {order.orderItems.map((item) => {
-                        return (
-                          <ListItem>
-                            <Avatar className={classes.blackAvatar}>
-                              {item.PRODUCT_MENU_TYPE == 'MT_DRINK' ?  <LocalDrinkIcon color={'primary'}/> : <RestaurantIcon color={'primary'}/>}
-                            </Avatar>
-                            <ListItemText primary={item.PRODUCT_NAME} secondary={`x ${item.QUANTITY}`} />
-                          </ListItem>
-                        )
-                      })}
-                        <Divider/>
-                    </List>
-                    <Typography variant="caption" component="h2">
-                        Total Price : £ {order.totalPrice.toFixed(2)}
-                    </Typography>
-                </CardContent>
+              <CardContent style={{flex:1,display: 'flex',flexDirection:'column',justifyContent: 'space-evenly'}}>
+                <Typography variant="headline" component="h2">
+                  Order Number : {order.orderId}
+                </Typography>
+                <Typography variant="subtitle2" component="h2">
+                  Order Status : {this.state.status.desc}
+                </Typography>
+                <Typography variant="subtitle2" component="h2">
+                  Table : {order.orderTable}
+                </Typography>
+                <List>
+                  {order.orderItems.map((item) => {
+                    return (
+                      <ListItem>
+                        <Avatar className={classes.blackAvatar}>
+                          {item.PRODUCT_MENU_TYPE == 'MT_DRINK' ?  <LocalDrinkIcon color={'primary'}/> : <RestaurantIcon color={'primary'}/>}
+                        </Avatar>
+                        <ListItemText primary={item.PRODUCT_NAME} secondary={
+                          <div>
+                            <p>Quantity: {item.QUANTITY}</p>
+                            {item.ORDER_CUSTOM &&
+                            <p>Customizations: {item.ORDER_CUSTOM}</p>
+                            }
+                          </div>
+                        } />
+                      </ListItem>
+                    )
+                  })}
+                  <Divider/>
+                </List>
+                <Typography variant="caption" component="h2">
+                  Total Price : £ {order.totalPrice.toFixed(2)}
+                </Typography>
+              </CardContent>
+
+              {this.state.status.id === 'WTFORCONF' ? (
+                <div>
+                  <Button variant="contained" color="primary" className={classes.button} onClick={this.confirmOrder}>
+                    Confirm order
+                  </Button>
+                  <Button variant="contained" color="primary" className={classes.button} onClick={() => this.setState({declineDialogOpen:true})}>
+                    Decline order
+                  </Button>
+                </div>
+              ) : (
+                <div>
+                  <Button variant="contained" color="primary" className={classes.button} onClick={this.completeOrder}>
+                    Complete order
+                  </Button>
+                </div>
+              )
+              }
               <div>
-                <Button variant="contained" color="primary"  className={classes.button} onClick={this.props.onOrderConfirm}>
-                  Confirm order
-                </Button>
-                <Button variant="contained" color="primary"  className={classes.button}>
-                  Decline order
-                </Button>
+                <Dialog
+                  open={this.state.declineDialogOpen}
+                  onClose={this.declineDialogClose}
+                  aria-labelledby="form-dialog-title"
+                >
+                  <DialogTitle id="form-dialog-title">Decline order</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText>
+                      Please pass a reason, for declining the order back to the customer
+                    </DialogContentText>
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="reason"
+                      label="Reason"
+                      type="text"
+                      value={this.state.reason}
+                      onChange={(e) => {this.setState({reason:e.target.value})}}
+                      fullWidth
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={this.declineDialogClose} color="primary">
+                      Cancel
+                    </Button>
+                    <Button onClick={this.declineOrder} color="primary">
+                      Decline order
+                    </Button>
+                  </DialogActions>
+                </Dialog>
               </div>
             </Card>
+          </Draggable>
         );
     }
 }

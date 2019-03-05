@@ -92,6 +92,24 @@ app.use(session({
 io.on('connection', function(socket){
   console.log('a user connected');
   socketClients.push(socket)
+
+
+  socket.on('confirmOrder', (data) => {
+    io.to(`${data.toSocketId}`).emit('orderConfirmed');
+    setOrderStatus(data)
+    io.sockets.emit('orderUpdated')
+  })
+
+  socket.on('declineOrder', (data) => {
+    io.to(`${data.toSocketId}`).emit('orderDeclined', {reason:data.reason});
+    io.sockets.emit('orderUpdated')
+    setOrderStatus(data)
+  })
+
+  socket.on('completeOrder', (data) => {
+    io.sockets.emit('orderUpdated')
+    setOrderStatus(data)
+  })
 });
 
 app.get('/myRestaurants', (req, res) => {
@@ -119,15 +137,36 @@ app.get('/getFoodByCategory', (req, res) => {
       PRODUCT_MENU_TYPE: req.query.foodCategory
     })
 
+
   if (!isWebAppMenu) {
     query.andWhereRaw('PRODUCT_NAME != "" AND PRODUCT_DESCRIPTION != "" AND PRODUCT_PRICE != "NULL"')
   }
 
   query.select()
     .then((data) => {
-      res.json({menuItems:data})
+      let promises = data.map((product) => {
+        return new Promise((resolve) => {
+          knex('FOOD_ALLERGY_PRODUCT')
+            .innerJoin('FOOD_ALLERGY', 'FOOD_ALLERGY_PRODUCT.FOOD_ALLERGY_ID', '=', 'FOOD_ALLERGY.FOOD_ALLERGY_ID')
+            .where({
+              PRODUCT_ID: product.PRODUCT_ID,
+            })
+            .select().then((allergies) => {
+              product.allergies = allergies
+              resolve()
+          })
+        })
+      })
+
+      Promise.all(promises).then(() => {
+        res.json({menuItems:data})
+      })
+
     })
 })
+
+
+
 
 
 
@@ -138,9 +177,26 @@ app.get('/getAllMenuItems', isAuthenticated, (req, res) => {
             RESTAURANT_ID:req.query.restaurantId,
         })
         .select()
-        .then((data) => {
-            res.json({menuItems:data})
+      .then((data) => {
+        let promises = data.map((product) => {
+          return new Promise((resolve) => {
+            knex('FOOD_ALLERGY_PRODUCT')
+              .innerJoin('FOOD_ALLERGY', 'FOOD_ALLERGY_PRODUCT.FOOD_ALLERGY_ID', '=', 'FOOD_ALLERGY.FOOD_ALLERGY_ID')
+              .where({
+                PRODUCT_ID: product.PRODUCT_ID,
+              })
+              .select().then((allergies) => {
+              product.allergies = allergies
+              resolve()
+            })
+          })
         })
+
+        Promise.all(promises).then(() => {
+          res.json({menuItems:data})
+        })
+
+      })
 })
 
 
@@ -163,11 +219,15 @@ app.get('/orders', (req, res) => {
     .where({
       RESTAURANT_ID:req.query.id,
     })
+    .whereNot({ORDER_STATUS:'COMPLETED'})
+    .andWhereNot({ORDER_STATUS:'DECLINED'})
     .select()
     .then((data) => {
       let promises = data.map((order) => {
         let orderRecord = {
           orderId:order.ORDER_ID,
+          orderTable:order.ORDER_TABLE,
+          from:order.ORDER_FROM_SOCKET_ID,
           orderStatus: {
               id:order.ORDER_STATUS,
               desc:order.STATUS_DESCRIPTION
@@ -205,12 +265,16 @@ app.get('/orders', (req, res) => {
 
 app.post('/createOrder', (req, res) => {
   let orderedItems = req.body.orderedItems
+  let from = req.body.from
+  let table = req.body.table
 
-  knex('ORDER_HEADER').insert({RESTAURANT_ID:orderedItems[0].RESTAURANT_ID, ORDER_STATUS:'WTFORCONF'}).then((data) => {
+  let orderRecord = {RESTAURANT_ID:orderedItems[0].RESTAURANT_ID, ORDER_STATUS:'WTFORCONF', ORDER_FROM_SOCKET_ID:from, ORDER_TABLE:table}
+
+  knex('ORDER_HEADER').insert(orderRecord).then((data) => {
     if (data) {
       const orderItems = orderedItems.map((item) => {
         return new Promise((resolve) => {
-          knex('ORDER_ITEM').insert({ORDER_ID:data[0], QUANTITY:item.quantity, PRODUCT_ID:item.PRODUCT_ID}).then((orderItemRes) => {
+          knex('ORDER_ITEM').insert({ORDER_ID:data[0], QUANTITY:item.quantity, PRODUCT_ID:item.PRODUCT_ID, ORDER_CUSTOM:item.customized}).then((orderItemRes) => {
             resolve(orderItemRes)
             //change to emit to specific later
             io.sockets.emit('newOrder')
@@ -222,11 +286,14 @@ app.post('/createOrder', (req, res) => {
 
 
   Promise.all(orderedItems).then((data) => {
-    res.json({status:STATUSES.SUCCESS})
+    res.json({orderStatus:'WTFORCONF'})
   })
 })
 
 app.get('/getRestaurant', (req, res) => {
+
+  console.log(req.query.id)
+
   knex('RESTAURANT')
     .where('RESTAURANT_ID','=', req.query.id)
     .select()
@@ -241,8 +308,15 @@ app.get('/getRestaurant', (req, res) => {
             .where({RESTAURANT_ID: req.query.id})
             .select()
             .then((avg) => {
-              resData.avgReview = avg[0]
-              res.json({resData, images})
+              knex('RESTAURANT_CATEGORY')
+                .innerJoin('FOOD_CATEGORY', 'RESTAURANT_CATEGORY.CATEGORY_ID', '=', 'FOOD_CATEGORY.CATEGORY_ID')
+                .where({RESTAURANT_ID:req.query.id})
+                .select().then((cats) => {
+                  resData.avgReview = avg[0]
+                  console.log(cats, 'shdhsdhs')
+                  resData.categories = cats
+                  res.json({resData, images})
+              })
             })
         })
     })
@@ -254,6 +328,18 @@ app.get('/getMultipleRestaurants', (req, res) => {
     .select()
     .then((restaurants) => {
       res.json(restaurants)
+    })
+})
+
+
+
+app.get('/getReviewsPerId', (req, res) => {
+  knex('REVIEW')
+    .innerJoin('RESTAURANT', 'REVIEW.RESTAURANT_ID', '=', 'RESTAURANT.RESTAURANT_ID')
+    .where({'REVIEW_PERSON_ID':req.query.id})
+    .select()
+    .then((reviews) => {
+      res.json(reviews)
     })
 })
 
@@ -276,7 +362,12 @@ app.post('/submitReview', (req, res) => {
     .then((review) => {
       console.log(review)
       if (review.length) {
-        knex('REVIEW')
+        console.log('got something should update the previous record')
+          knex('REVIEW')
+            .where({
+              RESTAURANT_ID: req.body.restaurantId,
+              REVIEW_PERSON_ID: req.body.profileId,
+            })
           .update(record).then(() => {
             res.json({status:STATUSES.SUCCESS})
           })
@@ -314,7 +405,9 @@ app.get('/getRestaurants', (req, res) => {
   let lat = req.query.lat
   let lng = req.query.lng
 
-  knex('RESTAURANT').select().then((data) => {
+  knex('RESTAURANT')
+    .select()
+    .then((data) => {
     const requests = data.map((restaurant) => {
 
       return new Promise((resolve) => {
@@ -337,7 +430,14 @@ app.get('/getRestaurants', (req, res) => {
         //     resolve({time:time, distance:distance,distanceVal:distanceVal, 'restaurant':restaurantObject})
         //   })
 
-        resolve({ time: '1 min', distance: '0.8 km', distanceVal: 816, restaurant: restaurant })
+        knex('RESTAURANT_CATEGORY')
+          .where({RESTAURANT_ID:restaurant.RESTAURANT_ID})
+          .select()
+          .then((cats) => {
+              console.log(cats, 'what about this')
+              restaurant.categories = cats
+              resolve({ time: '1 min', distance: '0.8 km', distanceVal: 816, restaurant: restaurant })
+          })
       })
     })
 
@@ -345,6 +445,16 @@ app.get('/getRestaurants', (req, res) => {
       res.json(JSON.stringify({results:data}))
     })
   })
+})
+
+app.get('/getRestaurantsByCat', (req, res) => {
+  let categories = req.query.categories.split(',')
+
+  knex('RESTAURANT')
+    .where({RESTAURANT_CATEGORIES:categories})
+    .select().then((data) => {
+
+    })
 })
 
 app.post('/addProduct', isAuthenticated, (req, res) => {
@@ -368,8 +478,6 @@ app.post('/addProduct', isAuthenticated, (req, res) => {
 
 app.get('/getAllReviews', isAuthenticated, (req, res) => {
 
-  console.log('yep', req.query.restaurantId)
-
   let restaurantId = req.query.restaurantId
 
   knex('REVIEW')
@@ -377,8 +485,28 @@ app.get('/getAllReviews', isAuthenticated, (req, res) => {
     .select().then((data) => {
     return res.json(data)
   })
+})
+
+
+app.get('/getCategories', (req, res) => {
+
+  knex('FOOD_CATEGORY')
+    .select().then((data) => {
+    return res.json(data)
+  })
 
 })
+
+
+app.get('/getFoodAllergies', (req, res) => {
+
+  knex('FOOD_ALLERGY')
+    .select().then((data) => {
+    return res.json(data)
+  })
+
+})
+
 
 
 app.post('/addPhoto', uploader.single('uploadedFile'), (req, res) => {
@@ -432,8 +560,9 @@ app.post('/saveMenu', isAuthenticated, (req, res) => {
 
   let menuItems = req.body.menuItems
 
+  console.log(menuItems)
+
   let promises = menuItems.map((i) => {
-    console.log(i)
     return new Promise((resolve) => {
       knex('PRODUCT')
         .where({
@@ -446,6 +575,14 @@ app.post('/saveMenu', isAuthenticated, (req, res) => {
           PRODUCT_MENU_TYPE: i.PRODUCT_MENU_TYPE,
         })
         .then((r) => {
+          i.PRODUCT_ALLERGIES.map((a) => {
+            knex('FOOD_ALLERGY_PRODUCT')
+              .insert({PRODUCT_ID:i.PRODUCT_ID, FOOD_ALLERGY_ID:a})
+              .then(() => {
+                console.log('allergy added')
+              })
+          })
+
           resolve(r)
         })
     })
@@ -461,7 +598,7 @@ app.post('/saveMenu', isAuthenticated, (req, res) => {
 app.post('/addRestaurant', isAuthenticated, (req, res) => {
 
   let address = `${req.body.city} ${req.body.street} ${req.body.postalCode}`
-  let categories = req.body.categories.join(',')
+  let categories = req.body.selectedCategories
 
   requestify.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.GOOGLE_API}`)
     .then(function(response) {
@@ -476,16 +613,28 @@ app.post('/addRestaurant', isAuthenticated, (req, res) => {
           'RESTAURANT_TABLE_COUNT':req.body.restaurantTableCount,
           'RESTAURANT_PRE_BOOK':req.body.allowPreBook,
           'RESTAURANT_LATITUDE':location.lat,
-          'RESTAURANT_LONGITUDE':location.lng,
-          'RESTAURANT_CATEGORIES':categories,
+          'RESTAURANT_LONGITUDE':location.lng
         }
 
         knex('RESTAURANT')
           .insert(record)
-          .then(() => {
-            return res.json({'status':STATUSES.SUCCESS})
-          })
+          .then((id) => {
+            let promises = categories.map((m) => {
+              return new Promise((resolve) => {
+                knex('RESTAURANT_CATEGORY')
+                  .insert({
+                    CATEGORY_ID:m,
+                    RESTAURANT_ID:id[0]
+                  }).then(() => {
+                    resolve()
+                })
+              })
+            })
+            Promise.all(promises).then((data) => {
+              return res.json({'status':STATUSES.SUCCESS})
+            })
 
+          })
       }
     );
 })
@@ -524,7 +673,6 @@ app.post('/editRestaurant', isAuthenticated, (req, res) => {
 
 
 app.post('/deleteRestaurant', (req, res) => {
-  console.log(req.body)
   knex('sessions')
     .where('sid', '=', JSON.parse(req.cookies.authentication).sessionId)
     .select()
@@ -655,7 +803,22 @@ function isAuthenticated(req, res, next) {
         return res.json({'status':'notAuthenticated'})
       }
     })
+}
 
+
+function setOrderStatus(data) {
+
+  console.log(data)
+
+  let orderId = data.orderId
+  let status = data.status
+
+  knex('ORDER_HEADER')
+    .where({'ORDER_ID':orderId})
+    .update({'ORDER_STATUS':status})
+    .then((data) => {
+      return true
+    })
 }
 
 

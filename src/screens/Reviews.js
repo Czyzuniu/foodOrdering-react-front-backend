@@ -1,44 +1,114 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Utils from "../components/Utils";
-import Paper from "@material-ui/core/Paper/Paper";
-import classNames from 'classnames';
-import AddIcon from '@material-ui/icons/AddCircle';
-import AddMenuItemColumn from "../components/AddMenuItemColumn";
-import Button from "@material-ui/core/Button/Button";
-import Divider from '@material-ui/core/Divider';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Avatar from '@material-ui/core/Avatar';
-import RestaurantIcon from '@material-ui/icons/Restaurant';
-import LocalDrinkIcon from '@material-ui/icons/LocalDrink';
-import BeachAccessIcon from '@material-ui/icons/BeachAccess';
-import Typography from "@material-ui/core/Typography/Typography";
-import CardContent from "@material-ui/core/CardContent/CardContent";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
+import TableFooter from '@material-ui/core/TableFooter';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Toolbar from '@material-ui/core/Toolbar';
-import Checkbox from '@material-ui/core/Checkbox';
+import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FilterListIcon from '@material-ui/icons/FilterList';
-import { lighten } from '@material-ui/core/styles/colorManipulator';
-import TextField from "@material-ui/core/TextField/TextField";
-import MenuItem from "@material-ui/core/MenuItem/MenuItem";
-import Card from "@material-ui/core/Card/Card";
-import Notification from "../components/Notification";
-import CustomizedNotification from "../components/CustomizedNotification";
-import Chips from "../components/Chips";
+import FirstPageIcon from '@material-ui/icons/FirstPage';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import Utils from "../components/Utils";
+import LastPageIcon from '@material-ui/icons/LastPage';
+import StarIcon from '@material-ui/icons/StarRate';
+import TableHead from "@material-ui/core/TableHead/TableHead";
+import Checkbox from "@material-ui/core/Checkbox/Checkbox";
+import Tooltip from "@material-ui/core/Tooltip/Tooltip";
+import TableSortLabel from "@material-ui/core/TableSortLabel/TableSortLabel";
 
+const actionsStyles = theme => ({
+  root: {
+    flexShrink: 0,
+    color: theme.palette.text.secondary,
+    marginLeft: theme.spacing.unit * 2.5,
+  },
+});
 
+const headers = [
+  { id: 'comments', numeric: false, disablePadding: true, label: 'Review Comments' },
+  { id: 'rating', numeric: false, disablePadding: false, label: 'Review Rating (1/5)' },
+];
+
+class TablePaginationActions extends React.Component {
+  handleFirstPageButtonClick = event => {
+    this.props.onChangePage(event, 0);
+  };
+
+  handleBackButtonClick = event => {
+    this.props.onChangePage(event, this.props.page - 1);
+  };
+
+  handleNextButtonClick = event => {
+    this.props.onChangePage(event, this.props.page + 1);
+  };
+
+  handleLastPageButtonClick = event => {
+    this.props.onChangePage(
+      event,
+      Math.max(0, Math.ceil(this.props.count / this.props.rowsPerPage) - 1),
+    );
+  };
+
+  render() {
+    const { classes, count, page, rowsPerPage, theme } = this.props;
+
+    return (
+      <div className={classes.root}>
+        <IconButton
+          onClick={this.handleFirstPageButtonClick}
+          disabled={page === 0}
+          aria-label="First Page"
+        >
+          {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
+        </IconButton>
+        <IconButton
+          onClick={this.handleBackButtonClick}
+          disabled={page === 0}
+          aria-label="Previous Page"
+        >
+          {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+        </IconButton>
+        <IconButton
+          onClick={this.handleNextButtonClick}
+          disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+          aria-label="Next Page"
+        >
+          {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+        </IconButton>
+        <IconButton
+          onClick={this.handleLastPageButtonClick}
+          disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+          aria-label="Last Page"
+        >
+          {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
+        </IconButton>
+      </div>
+    );
+  }
+}
+
+TablePaginationActions.propTypes = {
+  classes: PropTypes.object.isRequired,
+  count: PropTypes.number.isRequired,
+  onChangePage: PropTypes.func.isRequired,
+  page: PropTypes.number.isRequired,
+  rowsPerPage: PropTypes.number.isRequired,
+  theme: PropTypes.object.isRequired,
+};
+
+const TablePaginationActionsWrapped = withStyles(actionsStyles, { withTheme: true })(
+  TablePaginationActions,
+);
+
+let counter = 0;
+function createData(comments, rating) {
+  counter += 1;
+  return { id: counter, comments, rating,};
+}
 
 const styles = theme => ({
   categories: {
@@ -79,54 +149,20 @@ const styles = theme => ({
 });
 
 
-let counter = 0;
-function createData(comments, rating) {
-  counter += 1;
-  return { id: counter, REVIEW_COMMENTS:comments, REVIEW_RATING:rating};
-}
-function desc(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function stableSort(array, cmp) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = cmp(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map(el => el[0]);
-}
-
-function getSorting(order, orderBy) {
-  return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
-}
-
-const rows = [
-  { id: 'comm', numeric: false, disablePadding: true, label: 'Review comments' },
-  { id: 'rat', numeric: false, disablePadding: false, label: 'Review rating' },
-];
-
 class EnhancedTableHead extends React.Component {
   createSortHandler = property => event => {
     this.props.onRequestSort(event, property);
   };
 
   render() {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount } = this.props;
+    const {order, orderBy} = this.props;
 
     return (
       <TableHead>
         <TableRow>
           <TableCell padding="checkbox">
           </TableCell>
-          {rows.map(
+          {headers.map(
             row => (
               <TableCell
                 key={row.id}
@@ -157,134 +193,45 @@ class EnhancedTableHead extends React.Component {
   }
 }
 
-EnhancedTableHead.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.string.isRequired,
-  orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
-};
-
-const toolbarStyles = theme => ({
-  root: {
-    paddingRight: theme.spacing.unit,
+const CustomTableCell = withStyles(theme => ({
+  head: {
+    textAlign:'center',
+    fontSize: 18,
+    fontWeight:'bold'
   },
-  highlight:
-    theme.palette.type === 'light'
-      ? {
-        color: theme.palette.secondary.main,
-        backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-      }
-      : {
-        color: theme.palette.text.primary,
-        backgroundColor: theme.palette.secondary.dark,
-      },
-  spacer: {
-    flex: '1 1 100%',
-  },
-  actions: {
-    color: theme.palette.text.secondary,
-  },
-  title: {
-    flex: '0 0 auto',
-  },
-});
+}))(TableCell);
 
-let EnhancedTableToolbar = props => {
-  const { numSelected, classes,selectedCategory, onAddPress, onDelete} = props;
-
-  return (
-    <Toolbar
-      className={classNames(classes.root, {
-        [classes.highlight]: numSelected > 0,
-      })}
-    >
-      <div className={classes.title}>
-        {numSelected > 0 ? (
-          <Typography color="inherit" variant="subtitle1">
-            {numSelected} selected
-          </Typography>
-        ) : (
-          <Typography variant="h6" id="tableTitle">
-            Restaurant reviews
-          </Typography>
-        )}
-      </div>
-      <div className={classes.spacer} />
-    </Toolbar>
-  );
-};
-
-EnhancedTableToolbar.propTypes = {
-  classes: PropTypes.object.isRequired,
-  numSelected: PropTypes.number.isRequired,
-  selectedCategory: PropTypes.object.isRequired,
-};
-
-EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
-
-
-class ViewMenu extends Component {
-
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      data:[
-      ],
-      "restaurantId":this.props.history.location.state.restaurantId,
-      order: 'asc',
-      orderBy: 'Product Name',
-      selected: [],
-      page: 0,
-      rowsPerPage: 5,
-      selectedCategory:{
-        value:'',
-        label:''
-      },
-      status:{
-        message:'Product Added',
-        type:'success'
-      }
-    }
-  }
+class Reviews extends React.Component {
+  state = {
+    rows: [].sort((a, b) => (a.calories < b.calories ? -1 : 1)),
+    page: 0,
+    rowsPerPage: 5,
+  };
 
   componentDidMount() {
     Utils.getData((`${Utils.endPoint}/getAllReviews?restaurantId=${this.props.history.location.state.restaurantId}`)).then((rev) => {
-      let records = []
-      rev.map((item) => {
-        records.push(createData(item.REVIEW_COMMENTS, item.REVIEW_RATING))
+
+      let rows = []
+
+      rev.map((r) => {
+        rows.push(createData(r.REVIEW_COMMENTS, r.REVIEW_RATING))
       })
-      this.setState({data:records})
+
+      this.setState({
+        rows:rows
+      })
+
     })
   }
 
-  handleRequestSort = (event, property) => {
-    const orderBy = property;
-    let order = 'desc';
+  getStarsIconPerRating = (rating) => {
 
-    if (this.state.orderBy === property && this.state.order === 'desc') {
-      order = 'asc';
+    let stars = []
+
+    for (let i = 0; i < rating; i++) {
+      stars.push(<StarIcon style={{color:'yellow'}}/>)
     }
-
-    this.setState({ order, orderBy });
-  };
-
-
-
-  handleEdit = (e, id, col) => {
-    const { data } = this.state;
-    let newRecord
-
-    for (let i of data) {
-      if (i.id == id) {
-        newRecord = i
-      }
-    }
-    newRecord[col] = e.target.value
-    this.setState({data:data})
-
+    return stars
   }
 
   handleChangePage = (event, page) => {
@@ -292,70 +239,67 @@ class ViewMenu extends Component {
   };
 
   handleChangeRowsPerPage = event => {
-    this.setState({ rowsPerPage: event.target.value });
+    this.setState({ page: 0, rowsPerPage: event.target.value });
   };
 
   render() {
-    const {classes} = this.props;
-
-    const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+    const { classes } = this.props;
+    const {rowsPerPage, page, rows } = this.state;
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
     return (
       <div id='content' className={classes.row}>
-        <Paper className={classes.rootMain}>
-          <EnhancedTableToolbar numSelected={selected.length}/>
+        <Paper className={classes.root}>
           <div className={classes.tableWrapper}>
-            <Table className={classes.table} aria-labelledby="tableTitle" >
+            <Table className={classes.table}>
+              {/*<EnhancedTableHead*/}
+              {/*rowCount={headers.length}*/}
+              {/*/>*/}
+              <TableHead>
+                <TableRow>
+                  <CustomTableCell>Review Comments</CustomTableCell>
+                  <CustomTableCell align="right">Review Rating</CustomTableCell>
+                </TableRow>
+              </TableHead>
               <TableBody>
-                {stableSort(data, getSorting(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map(n => {
-                    return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={n.id}
-                      >
-                        <TableCell align="right">{n.REVIEW_COMMENTS}</TableCell>
-                        <TableCell align="right">{n.REVIEW_RATING}</TableCell>
-                      </TableRow>
-                    );
-                  })}
-                {emptyRows > 0 && (
-                  <TableRow style={{ height: 49 * emptyRows }}>
-                    <TableCell colSpan={6} />
+                {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => (
+                  <TableRow key={row.id}>
+                    <TableCell align="center">{row.comments}</TableCell>
+                    <TableCell align="center">
+                      <div>
+                        {this.getStarsIconPerRating(row.rating)}
+                      </div>
+                    </TableCell>
                   </TableRow>
-                )}
+                ))}
               </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    colSpan={3}
+                    count={rows.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    SelectProps={{
+                      native: true,
+                    }}
+                    onChangePage={this.handleChangePage}
+                    onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                    ActionsComponent={TablePaginationActionsWrapped}
+                  />
+                </TableRow>
+              </TableFooter>
             </Table>
           </div>
-          <TablePagination
-            rowsPerPageOptions={[5]}
-            component="div"
-            count={data.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            backIconButtonProps={{
-              'aria-label': 'Previous Page',
-            }}
-            nextIconButtonProps={{
-              'aria-label': 'Next Page',
-            }}
-            onChangePage={this.handleChangePage}
-            onChangeRowsPerPage={this.handleChangeRowsPerPage}
-          />
         </Paper>
-        {/*<div className={classes.filler}></div>*/}
-        <CustomizedNotification innerRef={this.notificationRef} variant={this.state.status.type} message={this.state.status.message}/>
       </div>
     );
   }
 }
 
-ViewMenu.propTypes = {
+Reviews.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ViewMenu);
+export default withStyles(styles)(Reviews);

@@ -17,7 +17,8 @@ const styles = theme => ({
     flexDirection: 'row',
     flexWrap:'wrap',
     justifyContent:'flex-start !important',
-    alignItems:'flex-start !important'
+    alignItems:'flex-start !important',
+    overflow:'auto'
   },
   input: {
     margin: theme.spacing.unit,
@@ -47,7 +48,7 @@ class ViewOrders extends Component {
       orders:{}
     }
 
-    this.socket = null
+    this.socket = socketIOClient('http://localhost:3001');
   }
 
   playOrderSound() {
@@ -55,12 +56,9 @@ class ViewOrders extends Component {
     this.audio.play()
   }
 
-
-
   componentDidMount() {
     Utils.getData(`${Utils.endPoint}/orders?id=${this.props.history.location.state.restaurantId}`).then((data) => {
       this.setState({orders:data})
-      this.socket = socketIOClient('http://localhost:3001');
 
       this.socket.on('newOrder', () => {
         Utils.getData(`${Utils.endPoint}/orders?id=${this.props.history.location.state.restaurantId}`).then((data) => {
@@ -69,20 +67,28 @@ class ViewOrders extends Component {
         })
       });
 
+      this.socket.on('orderUpdated', () => {
+        Utils.getData(`${Utils.endPoint}/orders?id=${this.props.history.location.state.restaurantId}`).then((data) => {
+          //dodgy but only updates when i set it to []
+          this.setState({orders:[]})
+          this.setState({orders:data})
+        })
+      });
+
     })
-  }
-
-  onOrderConfirm = () => {
-
   }
 
   render() {
     const {classes} = this.props;
 
+    const dragHandlers = {onStart: this.onStart, onStop: this.onStop};
+
     const renderOrders = (
         Object.keys(this.state.orders).map((ord) => {
-            const order = this.state.orders[ord]
-            return <OrderCard order={order.order} onOrderConfirm={(order) => this.onOrderConfirm()} ></OrderCard>
+            const order = this.state.orders[ord].order
+            return (
+                <OrderCard order={order} socket={this.socket} {...dragHandlers} />
+            )
         })
     )
 
@@ -96,7 +102,7 @@ class ViewOrders extends Component {
 
     return (
       <div id='content' className={classes.root}>
-          {renderOrders}
+        {renderOrders}
       </div>
     );
   }

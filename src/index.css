@@ -13,6 +13,11 @@ code {
     monospace;
 }
 
+.galleryImage:hover {
+    cursor:pointer;
+    border-color: red !important;
+}
+
 
 .App {
   height: 100vh;
@@ -45,7 +50,7 @@ code {
     justify-content: center;
     align-items: center;
     background-image:url("/img/bg.jpg");
-    background-repeat: no-repeat;
+    background-repeat: repeat-y;
     background-size: cover;
     background-position: center;
 }

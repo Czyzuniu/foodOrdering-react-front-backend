@@ -5,6 +5,7 @@ import Utils from "../components/Utils";
 import Paper from "@material-ui/core/Paper/Paper";
 import classNames from 'classnames';
 import AddIcon from '@material-ui/icons/AddCircle';
+import FlowerIcon from '@material-ui/icons/LocalFlorist';
 import AddMenuItemColumn from "../components/AddMenuItemColumn";
 import Button from "@material-ui/core/Button/Button";
 import Divider from '@material-ui/core/Divider';
@@ -37,6 +38,12 @@ import Card from "@material-ui/core/Card/Card";
 import Notification from "../components/Notification";
 import CustomizedNotification from "../components/CustomizedNotification";
 import Chips from "../components/Chips";
+import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText/DialogContentText";
+import DialogActions from "@material-ui/core/DialogActions/DialogActions";
+import Dialog from "@material-ui/core/Dialog/Dialog";
+import Select from "@material-ui/core/Select/Select";
 
 
 
@@ -113,9 +120,9 @@ const foodTypes = [
 
 
 let counter = 0;
-function createData(name, desc, price, cat, dbId) {
+function createData(name, desc, price, cat, dbId, allergies) {
     counter += 1;
-    return { id: counter, PRODUCT_NAME:name, PRODUCT_DESCRIPTION:desc, PRODUCT_PRICE:price, PRODUCT_MENU_TYPE:cat, PRODUCT_ID:dbId};
+    return { id: counter, PRODUCT_NAME:name, PRODUCT_DESCRIPTION:desc, PRODUCT_PRICE:price, PRODUCT_MENU_TYPE:cat, PRODUCT_ID:dbId, PRODUCT_ALLERGIES:allergies};
 }
 function desc(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -233,9 +240,7 @@ const toolbarStyles = theme => ({
 });
 
 let EnhancedTableToolbar = props => {
-    const { numSelected, classes,selectedCategory, onAddPress, onDelete} = props;
-
-    console.log(selectedCategory)
+    const { numSelected, classes,selectedCategory, onAddPress, onDelete, onAllergyPress} = props;
 
     return (
         <Toolbar
@@ -257,6 +262,15 @@ let EnhancedTableToolbar = props => {
             <div className={classes.spacer} />
             <div className={classes.actions}>
                 <div style={{display: 'flex'}}>
+                  {numSelected > 0 ? (
+                    <Tooltip title="Add allergy">
+                      <IconButton aria-label="Add">
+                        <FlowerIcon onClick={onAllergyPress}/>
+                      </IconButton>
+                    </Tooltip>
+                  ) : (
+                    ''
+                  )}
                 <Tooltip title="Add row">
                     <IconButton aria-label="Add" onClick={onAddPress}>
                         <AddIcon />
@@ -289,35 +303,39 @@ EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
 class ViewMenu extends Component {
 
     constructor(props) {
-        super(props)
+      super(props)
 
-        this.state = {
-            data:[
-            ],
-            "restaurantId":this.props.history.location.state.restaurantId,
-            order: 'asc',
-            orderBy: 'Product Name',
-            selected: [],
-            page: 0,
-            rowsPerPage: 5,
-            selectedCategory:{
-                value:'',
-                label:''
-            },
-            status:{
-              message:'Product Added',
-              type:'success'
-            }
-        }
+      this.state = {
+        data: [],
+        "restaurantId": this.props.history.location.state.restaurantId,
+        order: 'asc',
+        orderBy: 'Product Name',
+        selected: [],
+        page: 0,
+        rowsPerPage: 5,
+        selectedCategory: {
+          value: '',
+          label: ''
+        },
+        status: {
+          message: 'Product Added',
+          type: 'success'
+        },
+        selectedAllergies: [],
+        showAllergyDialog:false,
+        allergiesList: []
+      }
 
-        this.notificationRef = React.createRef();
+      this.notificationRef = React.createRef();
+
+      this.showAllMenuItems()
+    }
 
 
-
-
-
-        this.showAllMenuItems()
-
+    componentDidMount() {
+      Utils.getFoodAllergies().then((all) => {
+        this.setState({allergiesList:all})
+      })
     }
 
     showByCategory(type) {
@@ -326,15 +344,13 @@ class ViewMenu extends Component {
         if (type.value != '') {
             Utils.getData(`${Utils.endPoint}/getFoodByCategory?restaurantId=${this.state.restaurantId}&foodCategory=${type.value}&isWebApp=true`).then((res) => {
                 res.menuItems.map((item) => {
-                    records.push(createData(item.PRODUCT_NAME, item.PRODUCT_DESCRIPTION, item.PRODUCT_PRICE, item.PRODUCT_MENU_TYPE,item.PRODUCT_ID,false))
+                    records.push(createData(item.PRODUCT_NAME, item.PRODUCT_DESCRIPTION, item.PRODUCT_PRICE, item.PRODUCT_MENU_TYPE,item.PRODUCT_ID,item.allergies))
                 })
                 this.setState({
                     data:records,
                     selectedCategory:type,
                     selected:[]
                 })
-
-                console.log(this.state)
             })
         } else {
             this.showAllMenuItems()
@@ -349,7 +365,7 @@ class ViewMenu extends Component {
         let records = []
         Utils.getData(`${Utils.endPoint}/getAllMenuItems?restaurantId=${this.state.restaurantId}`).then((res) => {
             res.menuItems.map((item) => {
-                records.push(createData(item.PRODUCT_NAME, item.PRODUCT_DESCRIPTION, item.PRODUCT_PRICE, item.PRODUCT_MENU_TYPE, item.PRODUCT_ID,false))
+                records.push(createData(item.PRODUCT_NAME, item.PRODUCT_DESCRIPTION, item.PRODUCT_PRICE, item.PRODUCT_MENU_TYPE, item.PRODUCT_ID,item.allergies))
             })
             this.setState({
                 data:records,
@@ -427,7 +443,7 @@ class ViewMenu extends Component {
         let selectedCategory = this.state.selectedCategory.value ? this.state.selectedCategory.value : "MT_STARTER"
 
 
-        let newRow = createData('','','',selectedCategory,null)
+        let newRow = createData('','','',selectedCategory,null,[])
         let newData = this.state.data
         let lastPage = parseInt(this.state.data.length / this.state.rowsPerPage)
 
@@ -458,8 +474,6 @@ class ViewMenu extends Component {
 
     onDelete = () => {
         let selected = this.state.selected
-        console.log(selected)
-        console.log(this.state.data)
         let toDelete = []
 
         for (let i of selected) {
@@ -483,7 +497,33 @@ class ViewMenu extends Component {
         })
     }
 
-    saveMenu = () => {
+
+    addAllergy = () => {
+      let {selectedAllergies, selected, data} = this.state
+
+      selected.map((s) => {
+        let newRecord
+        for (let i of data) {
+          if (i.id == s) {
+            newRecord = i
+          }
+        }
+        newRecord['PRODUCT_ALLERGIES'] = selectedAllergies
+        this.setState({data:data, showAllergyDialog:false, selected:[], selectedAllergies:[]})
+        this.saveMenu(true)
+        this.showByCategory(this.state.selectedCategory)
+      })
+
+    }
+
+    hideAllergyDialog = () => {
+      this.setState({
+        showAllergyDialog:false
+      })
+    }
+
+
+    saveMenu = (showNotif) => {
         let data = {
             menuItems:this.state.data,
             restaurantId:this.props.history.location.state.restaurantId
@@ -491,7 +531,9 @@ class ViewMenu extends Component {
 
         Utils.postData(`${Utils.endPoint}/saveMenu`,data).then((res) => {
             if (res.status === 'success') {
-                this.setState({status:{type:'success', message:'Menu saved!'}})
+                if (showNotif) {
+                  this.setState({status:{type:'success', message:'Menu saved!'}})
+                }
                 this.notificationRef.current.open()
             }
         })
@@ -530,13 +572,13 @@ class ViewMenu extends Component {
                     </List>
                 </Paper>
 
-                    <Button variant="contained" color="primary" size={'large'} className={classes.button} onClick={this.saveMenu}>
+                    <Button variant="contained" color="primary" size={'large'} className={classes.button} onClick={() => this.saveMenu(true)}>
                         Save changes
                     </Button>
 
                 </div>
                 <Paper className={classes.rootMain}>
-                    <EnhancedTableToolbar numSelected={selected.length} selectedCategory={this.state.selectedCategory} onAddPress={this.addRow} onDelete={this.onDelete} />
+                    <EnhancedTableToolbar numSelected={selected.length} selectedCategory={this.state.selectedCategory} onAddPress={this.addRow} onDelete={this.onDelete} onAllergyPress={() => {this.setState({showAllergyDialog:true})}} />
                     <div className={classes.tableWrapper}>
                         <Table className={classes.table} aria-labelledby="tableTitle" >
                             <EnhancedTableHead
@@ -630,11 +672,10 @@ class ViewMenu extends Component {
                                                     </TextField>
                                                 </TableCell>
                                                 <TableCell align="left">
-                                                    <Chips chipData={[
-                                                        { key: 0, label: 'Nuts' },
-                                                        { key: 1, label: 'Gluten' },
-                                                        { key: 2, label: 'Wheat' }
-                                                    ]}></Chips>
+                                                  <Chips chipData={n.PRODUCT_ALLERGIES.map((allergy, index) => {
+                                                      return {key:index, label:allergy.FOOD_ALLERGY_DESCRIPTION}
+                                                  })}>
+                                                  </Chips>
                                                 </TableCell>
                                             </TableRow>
                                         );
@@ -662,6 +703,43 @@ class ViewMenu extends Component {
                         onChangePage={this.handleChangePage}
                         onChangeRowsPerPage={this.handleChangeRowsPerPage}
                     />
+
+                  <Dialog
+                    open={this.state.showAllergyDialog}
+                    onClose={this.hideAllergyDialog}
+                    aria-labelledby="form-dialog-title"
+                  >
+                    <DialogTitle id="form-dialog-title">Decline order</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        Select any allergies which you wish to add to your selected products
+                      </DialogContentText>
+                      <div style={{display:'flex',justifyContent:'center'}}>
+                        <Select
+                          multiple
+                          value={this.state.selectedAllergies}
+                          onChange={(event) => {
+                            this.setState({ selectedAllergies: event.target.value });
+                          }}
+                          style={{width:'100%'}}
+                        >
+                          {this.state.allergiesList.map(c => (
+                            <MenuItem key={c.FOOD_ALLERGY_ID} value={c.FOOD_ALLERGY_ID}>
+                              {c.FOOD_ALLERGY_DESCRIPTION}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </div>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={this.hideAllergyDialog} color="primary">
+                        Cancel
+                      </Button>
+                      <Button onClick={this.addAllergy} color="primary">
+                        Add allergies
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
                 </Paper>
                 {/*<div className={classes.filler}></div>*/}
                 <CustomizedNotification innerRef={this.notificationRef} variant={this.state.status.type} message={this.state.status.message}/>

@@ -9,11 +9,8 @@ import TextField from "@material-ui/core/TextField/TextField";
 import MenuItem from "@material-ui/core/MenuItem/MenuItem";
 import Select from "@material-ui/core/Select/Select"
 import InputLabel from "@material-ui/core/InputLabel/InputLabel"
-import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import Grid from '@material-ui/core/Grid';
-import TimeInput from 'material-ui-time-picker'
 
 
 
@@ -56,7 +53,14 @@ class SetRestaurant extends Component {
       this.restaurant = this.props.history.location.state.restaurant
     }
 
+    console.log(this.restaurant)
+
     if (this.restaurant) {
+
+        let selectedCategories = this.restaurant.categories.map((cat) => {
+            return cat.CATEGORY_ID
+        })
+
         this.state = {
             restaurantId:this.restaurant.RESTAURANT_ID,
             restaurantName:this.restaurant.RESTAURANT_NAME,
@@ -65,8 +69,8 @@ class SetRestaurant extends Component {
             street:this.restaurant.RESTAURANT_STREET,
             city:this.restaurant.RESTAURANT_CITY,
             postalCode:this.restaurant.RESTAURANT_POSTCODE,
-            categories:this.restaurant.RESTAURANT_CATEGORIES.split(',')
-
+            selectedCategories:selectedCategories,
+            categories:[]
         }
     } else {
         this.state = {
@@ -85,10 +89,13 @@ class SetRestaurant extends Component {
 
   componentDidMount() {
     Utils.getFoodCategories().then((data) => {
+      console.log(data)
       this.setState({
         categories:data
       })
     })
+
+
   }
 
     addRestaurant = () => {

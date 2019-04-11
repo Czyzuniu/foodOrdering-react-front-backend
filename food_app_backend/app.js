@@ -112,19 +112,32 @@ io.on('connection', function(socket){
   })
 });
 
-app.get('/myRestaurants', (req, res) => {
+app.get('/myRestaurants',isAuthenticated,(req, res) => {
   let authentication= JSON.parse(req.cookies.authentication)
+  let restaurants = []
 
   knex('RESTAURANT')
     .where('RESTAURANT_OWNER','=', authentication.userId)
     .select()
     .then((data) => {
-      res.json(
-        {
-          status:STATUSES.SUCCESS,
-          restaurantsData:data
-        }
-      )
+      let promises = data.map((restaurant) => {
+        return new Promise((resolve) => {
+          knex('RESTAURANT_CATEGORY')
+            .where({RESTAURANT_ID:restaurant.RESTAURANT_ID})
+            .select()
+            .then((cats) => {
+              restaurant.categories = cats
+              restaurants.push(restaurant)
+              resolve()
+            })
+        })
+      })
+
+
+      Promise.all(promises).then(() => {
+        res.json({restaurants:restaurants})
+      })
+
     })
 })
 
@@ -313,7 +326,6 @@ app.get('/getRestaurant', (req, res) => {
                 .where({RESTAURANT_ID:req.query.id})
                 .select().then((cats) => {
                   resData.avgReview = avg[0]
-                  console.log(cats, 'shdhsdhs')
                   resData.categories = cats
                   res.json({resData, images})
               })
@@ -434,7 +446,6 @@ app.get('/getRestaurants', (req, res) => {
           .where({RESTAURANT_ID:restaurant.RESTAURANT_ID})
           .select()
           .then((cats) => {
-              console.log(cats, 'what about this')
               restaurant.categories = cats
               resolve({ time: '1 min', distance: '0.8 km', distanceVal: 816, restaurant: restaurant })
           })
@@ -660,6 +671,9 @@ app.post('/editRestaurant', isAuthenticated, (req, res) => {
                     'RESTAURANT_CATEGORIES':categories,
                 }
 
+
+                //categories are not saving
+
                 knex('RESTAURANT')
                     .update(record)
                     .then(() => {
@@ -693,6 +707,29 @@ app.post('/deleteRestaurant', (req, res) => {
       }
     })
 })
+
+
+app.post('/editProfile', (req, res) => {
+  knex('PERSON')
+    .where({'PERSON_ID':req.body.id})
+    .update({PERSON_FIRSTNAME:req.body.firstName,PERSON_LASTNAME:req.body.lastName,PERSON_PHONE:req.body.phone,PERSON_EMAIL:req.body.emailAddress})
+    .then((updated) => {
+      knex('PERSON')
+        .where({'PERSON_ID':req.body.id})
+        .select().then((data) => {
+          let user = {
+              id:data[0].PERSON_ID,
+              firstName:data[0].PERSON_FIRSTNAME,
+              lastName:data[0].PERSON_LASTNAME,
+              emailAddress:data[0].PERSON_EMAIL,
+              phoneNumber:data[0].PERSON_PHONE,
+          }
+          res.json({status:STATUSES.SUCCESS,authenticatedUser:user})
+      })
+    })
+})
+
+
 
 
 app.get('/checkAuthentication', (req, res) => {
@@ -775,7 +812,9 @@ app.post('/login', (req, res) => {
               authenticatedUser:{
                 id:userData[0].PERSON_ID,
                 firstName:userData[0].PERSON_FIRSTNAME,
-                lastName:userData[0].PERSON_LASTNAME
+                lastName:userData[0].PERSON_LASTNAME,
+                emailAddress:userData[0].PERSON_EMAIL,
+                phoneNumber:userData[0].PERSON_PHONE,
               }
             });
           } else {

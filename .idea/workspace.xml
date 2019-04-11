@@ -2,23 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="134f5f48-2020-4206-acea-78531ca825a1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/screens/ViewPhoto.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/screens/Profile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/food_app_backend/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/food_app_backend/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mydb.sql" beforeDir="false" afterPath="$PROJECT_DIR$/mydb.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/OrderCard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/OrderCard.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Utils.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/screens/AddPhotos.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/AddPhotos.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/screens/Reviews.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/Reviews.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/TopBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/TopBar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/Home.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/Restaurants.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/Restaurants.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/SetRestaurant.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/SetRestaurant.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/screens/ViewMenu.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/ViewMenu.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/screens/ViewOrders.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/ViewOrders.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -213,25 +205,25 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="css" value="2" />
-          <entry key="js" value="2728" />
+          <entry key="js" value="3854" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="CSS" value="2" />
-          <entry key="JavaScript" value="2728" />
+          <entry key="JavaScript" value="3854" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="css" value="2" />
-          <entry key="js" value="19" />
+          <entry key="js" value="25" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="CSS" value="2" />
-          <entry key="JavaScript" value="19" />
+          <entry key="JavaScript" value="25" />
         </counts>
       </usages-collector>
     </session>
@@ -242,73 +234,82 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/components/Utils.js">
+        <entry file="file://$PROJECT_DIR$/src/components/TopBar.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="283">
-              <caret line="30" column="35" lean-forward="true" selection-start-line="30" selection-start-column="35" selection-end-line="30" selection-end-column="35" />
+            <state relative-caret-position="672">
+              <caret line="134" column="9" selection-start-line="134" selection-start-column="9" selection-end-line="134" selection-end-column="68" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/food_app_backend/app.js">
+        <entry file="file://$PROJECT_DIR$/src/screens/Register.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="181">
-              <caret line="303" column="17" lean-forward="true" selection-start-line="303" selection-start-column="17" selection-end-line="303" selection-end-column="17" />
+            <state relative-caret-position="287">
+              <caret line="67" lean-forward="true" selection-end-line="179" selection-end-column="44" />
+              <folding>
+                <element signature="e#0#39#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/screens/Login.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="574">
+              <caret line="69" selection-start-line="69" selection-end-line="71" selection-end-column="10" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/screens/Home.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="387">
+              <caret line="47" column="12" lean-forward="true" selection-start-line="47" selection-start-column="12" selection-end-line="47" selection-end-column="12" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/components/RestaurantCard.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1214">
+              <caret line="116" column="15" selection-start-line="116" selection-start-column="15" selection-end-line="116" selection-end-column="15" />
+              <folding>
+                <element signature="e#0#41#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/screens/Restaurants.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="536">
+              <caret line="78" column="25" selection-start-line="78" selection-start-column="25" selection-end-line="78" selection-end-column="25" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/screens/Profile.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="197">
+              <caret line="65" column="29" lean-forward="true" selection-start-line="65" selection-start-column="29" selection-end-line="65" selection-end-column="29" />
+              <folding>
+                <element signature="e#0#39#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/screens/ViewMenu.js">
+        <entry file="file://$PROJECT_DIR$/food_app_backend/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="246">
-              <caret line="507" column="25" lean-forward="true" selection-start-line="507" selection-start-column="25" selection-end-line="507" selection-end-column="25" />
-              <folding>
-                <element signature="e#0#41#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/components/Chips.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-7">
-              <caret line="19" column="3" lean-forward="true" selection-start-line="19" selection-start-column="3" selection-end-line="19" selection-end-column="3" />
-              <folding>
-                <element signature="e#0#26#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/components/OrderCard.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="545">
-              <caret line="175" column="25" lean-forward="true" selection-start-line="146" selection-start-column="16" selection-end-line="175" selection-end-column="25" />
-              <folding>
-                <element signature="e#0#41#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mydb.sql">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="738">
-              <caret line="384" selection-start-line="384" selection-end-line="384" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/index.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
+            <state relative-caret-position="333">
+              <caret line="673" lean-forward="true" selection-start-line="673" selection-end-line="673" />
             </state>
           </provider>
         </entry>
@@ -316,31 +317,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/screens/SetRestaurant.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="233">
-              <caret line="94" column="53" selection-start-line="94" selection-start-column="40" selection-end-line="94" selection-end-column="53" />
+            <state relative-caret-position="485">
+              <caret line="113" column="56" selection-start-line="113" selection-start-column="42" selection-end-line="113" selection-end-column="56" />
               <folding>
                 <element signature="e#0#41#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/food_app_backend/package.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="13" column="29" selection-start-line="13" selection-start-column="29" selection-end-line="13" selection-end-column="29" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/screens/Reviews.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3390">
-              <caret line="226" selection-start-line="226" selection-end-line="235" />
-              <folding>
-                <element signature="e#0#26#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -350,19 +330,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>this.state</find>
-      <find>wish</find>
-      <find>ViewMenu</find>
-      <find>selected</find>
-      <find>PRODUCT_NAME</find>
-      <find>map</find>
-      <find>multi</find>
-      <find>product Allergies</find>
-      <find>false</find>
-      <find>PRODUCT_ALLERGIES</find>
-      <find>[]</find>
-      <find>chips</find>
-      <find>allergiesList</find>
       <find>selectedAl</find>
       <find>setState</find>
       <find>categ</find>
@@ -371,7 +338,6 @@
       <find>addAl</find>
       <find>createData</find>
       <find>getFoodByCategory</find>
-      <find>get</find>
       <find>getCa</find>
       <find>getAllMenuItems</find>
       <find>MENU</find>
@@ -380,6 +346,20 @@
       <find>saveMenu</find>
       <find>console.</find>
       <find>showBY</find>
+      <find>get</find>
+      <find>user</find>
+      <find>knex</find>
+      <find>update</find>
+      <find>myRestaurants</find>
+      <find>RESTAURANT_CATEGORIES</find>
+      <find>restaurant_category</find>
+      <find>login</find>
+      <find>restaurant</find>
+      <find>categories</find>
+      <find>utils</find>
+      <find>Promises</find>
+      <find>MAP</find>
+      <find>editRestaurant</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -394,11 +374,9 @@
         <option value="$PROJECT_DIR$/food_app_backend/routes/users.js" />
         <option value="$PROJECT_DIR$/food_app_backend/routes/index.js" />
         <option value="$PROJECT_DIR$/package.json" />
-        <option value="$PROJECT_DIR$/src/screens/Home.js" />
         <option value="$PROJECT_DIR$/src/components/RestaurantCart.js" />
         <option value="$PROJECT_DIR$/src/components/SlideAlert.js" />
         <option value="$PROJECT_DIR$/src/components/AlertDialogSlide.js" />
-        <option value="$PROJECT_DIR$/src/components/TopBar.js" />
         <option value="$PROJECT_DIR$/src/screens/Register.js" />
         <option value="$PROJECT_DIR$/food_app_backend/vars.env" />
         <option value="$PROJECT_DIR$/public/index.html" />
@@ -409,12 +387,9 @@
         <option value="$PROJECT_DIR$/src/components/AddMenuItemColumn.js" />
         <option value="$PROJECT_DIR$/src/screens/Login.js" />
         <option value="$PROJECT_DIR$/src/components/CustomizedNotification.js" />
-        <option value="$PROJECT_DIR$/src/screens/Restaurants.js" />
         <option value="$PROJECT_DIR$/src/components/RestaurantCard.js" />
-        <option value="$PROJECT_DIR$/src/App.js" />
         <option value="$PROJECT_DIR$/src/screens/ViewPhoto.js" />
         <option value="$PROJECT_DIR$/src/screens/AddPhotos.js" />
-        <option value="$PROJECT_DIR$/src/screens/SetRestaurant.js" />
         <option value="$PROJECT_DIR$/src/screens/Reviews.js" />
         <option value="$PROJECT_DIR$/src/index.css" />
         <option value="$PROJECT_DIR$/src/screens/ViewOrders.js" />
@@ -422,8 +397,14 @@
         <option value="$PROJECT_DIR$/mydb.sql" />
         <option value="$PROJECT_DIR$/src/index.js" />
         <option value="$PROJECT_DIR$/src/components/Utils.js" />
-        <option value="$PROJECT_DIR$/food_app_backend/app.js" />
         <option value="$PROJECT_DIR$/src/screens/ViewMenu.js" />
+        <option value="$PROJECT_DIR$/src/App.js" />
+        <option value="$PROJECT_DIR$/src/components/TopBar.js" />
+        <option value="$PROJECT_DIR$/src/screens/Profile.js" />
+        <option value="$PROJECT_DIR$/src/screens/Home.js" />
+        <option value="$PROJECT_DIR$/src/screens/Restaurants.js" />
+        <option value="$PROJECT_DIR$/src/screens/SetRestaurant.js" />
+        <option value="$PROJECT_DIR$/food_app_backend/app.js" />
       </list>
     </option>
   </component>
@@ -461,6 +442,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -494,7 +476,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -569,13 +550,13 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="274176000" />
+    <option name="totallyTimeSpent" value="278742000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="825" extended-state="0" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.6726027" visible="true" weight="0.22031474" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.6726027" visible="true" weight="0.16227607" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" sideWeight="0.32739726" side_tool="true" weight="0.19241774" />
@@ -671,13 +652,6 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/node_modules/@material-ui/core/Typography/Typography.d.ts" />
     <entry file="file://$PROJECT_DIR$/node_modules/@material-ui/core/SvgIcon/SvgIcon.d.ts" />
-    <entry file="file://$PROJECT_DIR$/src/components/TopBar.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="621">
-          <caret line="118" column="38" selection-start-line="118" selection-start-column="38" selection-end-line="118" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/inserts.sql.csv" />
     <entry file="file://$PROJECT_DIR$/src/components/AlertDialogSlide.js">
       <provider selected="true" editor-type-id="text-editor">
@@ -718,13 +692,6 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/food_app_backend/uploads/747564ea396ee75f072937e998d9b948.png" />
     <entry file="file://$PROJECT_DIR$/src/screens/ViewMenuNew.js" />
-    <entry file="file://$PROJECT_DIR$/src/screens/Home.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="53" selection-start-line="53" selection-end-line="59" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/screens/AddMenu.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="761">
@@ -739,44 +706,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/screens/Restaurants.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="61" column="43" lean-forward="true" selection-start-line="61" selection-start-column="43" selection-end-line="61" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/screens/EditRestaurant.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="35" column="37" lean-forward="true" selection-start-line="35" selection-start-column="37" selection-end-line="35" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/App.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="338">
-          <caret line="53" column="73" selection-start-line="53" selection-start-column="73" selection-end-line="53" selection-end-column="73" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/RestaurantCard.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="879">
-          <caret line="76" column="31" selection-start-line="76" selection-start-column="14" selection-end-line="76" selection-end-column="31" />
-          <folding>
-            <element signature="e#0#41#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="612">
+          <caret line="56" column="12" selection-start-line="56" selection-start-column="12" selection-end-line="56" selection-end-column="70" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/screens/ViewPhoto.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" column="22" lean-forward="true" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="22" />
-          <folding>
-            <element signature="e#0#39#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="221">
+          <caret line="15" column="22" lean-forward="true" selection-end-line="36" />
         </state>
       </provider>
     </entry>
@@ -784,29 +724,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="232">
           <caret line="118" column="116" selection-start-line="118" selection-start-column="116" selection-end-line="118" selection-end-column="116" />
-          <folding>
-            <element signature="e#0#39#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/screens/Login.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1290">
-          <caret line="86" column="18" lean-forward="true" selection-start-line="86" selection-start-column="18" selection-end-line="86" selection-end-column="18" />
-          <folding>
-            <element signature="e#0#39#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/screens/Register.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="287">
-          <caret line="55" lean-forward="true" selection-start-line="55" selection-end-line="55" />
-          <folding>
-            <element signature="e#0#39#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -835,22 +752,19 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
           <caret line="10" column="56" selection-start-line="10" selection-start-column="56" selection-end-line="10" selection-end-column="56" />
-          <folding>
-            <element signature="e#0#39#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/food_app_backend/package.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
+        <state relative-caret-position="221">
           <caret line="13" column="29" selection-start-line="13" selection-start-column="29" selection-end-line="13" selection-end-column="29" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/screens/Reviews.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3390">
+        <state relative-caret-position="3502">
           <caret line="226" selection-start-line="226" selection-end-line="235" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
@@ -867,8 +781,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
+        <state relative-caret-position="170">
+          <caret line="14" selection-start-line="14" selection-end-line="14" />
         </state>
       </provider>
     </entry>
@@ -876,9 +790,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="545">
           <caret line="175" column="25" lean-forward="true" selection-start-line="146" selection-start-column="16" selection-end-line="175" selection-end-column="25" />
-          <folding>
-            <element signature="e#0#41#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -893,26 +804,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-7">
           <caret line="19" column="3" lean-forward="true" selection-start-line="19" selection-start-column="3" selection-end-line="19" selection-end-column="3" />
-          <folding>
-            <element signature="e#0#26#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/screens/SetRestaurant.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="233">
-          <caret line="94" column="53" selection-start-line="94" selection-start-column="40" selection-end-line="94" selection-end-column="53" />
-          <folding>
-            <element signature="e#0#41#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/food_app_backend/app.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="181">
-          <caret line="303" column="17" lean-forward="true" selection-start-line="303" selection-start-column="17" selection-end-line="303" selection-end-column="17" />
         </state>
       </provider>
     </entry>
@@ -923,6 +814,88 @@
           <folding>
             <element signature="e#0#41#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/screens/Register.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="287">
+          <caret line="67" lean-forward="true" selection-end-line="179" selection-end-column="44" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/screens/Login.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="574">
+          <caret line="69" selection-start-line="69" selection-end-line="71" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/TopBar.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="672">
+          <caret line="134" column="9" selection-start-line="134" selection-start-column="9" selection-end-line="134" selection-end-column="68" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/screens/Home.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="387">
+          <caret line="47" column="12" lean-forward="true" selection-start-line="47" selection-start-column="12" selection-end-line="47" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/screens/Profile.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="197">
+          <caret line="65" column="29" lean-forward="true" selection-start-line="65" selection-start-column="29" selection-end-line="65" selection-end-column="29" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/screens/Restaurants.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="536">
+          <caret line="78" column="25" selection-start-line="78" selection-start-column="25" selection-end-line="78" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/RestaurantCard.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1214">
+          <caret line="116" column="15" selection-start-line="116" selection-start-column="15" selection-end-line="116" selection-end-column="15" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/screens/EditRestaurant.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="35" column="37" lean-forward="true" selection-start-line="35" selection-start-column="37" selection-end-line="35" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/screens/SetRestaurant.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="485">
+          <caret line="113" column="56" selection-start-line="113" selection-start-column="42" selection-end-line="113" selection-end-column="56" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/food_app_backend/app.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="333">
+          <caret line="673" lean-forward="true" selection-start-line="673" selection-end-line="673" />
         </state>
       </provider>
     </entry>

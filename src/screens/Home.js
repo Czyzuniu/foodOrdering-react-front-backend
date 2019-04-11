@@ -48,13 +48,13 @@ class Home extends Component {
   render() {
     const {classes} = this.props;
 
-    const authenitcatedUser = JSON.parse(localStorage.getItem('foodApp')).authenticatedUser
+    const authenticatedUser = JSON.parse(localStorage.getItem('foodApp')).authenticatedUser
 
     return (
       <div id='content'>
         <Paper elevation={3} className={classes.root}>
           <Typography variant="title"  color="inherit" noWrap>
-            Welcome {authenitcatedUser.firstName}
+            Welcome {authenticatedUser.firstName}
           </Typography>
         </Paper>
       </div>

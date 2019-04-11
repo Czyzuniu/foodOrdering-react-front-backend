@@ -118,7 +118,9 @@ class TopBar extends React.Component {
         open={isMenuOpen}
         onClose={this.handleMenuClose}
       >
-        <MenuItem onClick={this.handleMenuClose}> My Profile</MenuItem>
+        <MenuItem onClick={() => {
+          Utils.navigate('/profile')
+        }}> My Profile</MenuItem>
         <MenuItem onClick={() => {
           Utils.navigate('/restaurants')
         }}> My Restaurants</MenuItem>

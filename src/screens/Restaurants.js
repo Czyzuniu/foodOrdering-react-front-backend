@@ -51,7 +51,7 @@ class Restaurants extends Component {
     Utils.getData('http://localhost:3001/myRestaurants').then((data) => {
       //check status later
       this.setState({
-        restaurants:data.restaurantsData,
+        restaurants:data.restaurants,
         loading:false
       })
     })
@@ -63,10 +63,7 @@ class Restaurants extends Component {
       this.setState({
         toDelete:""
       })
-
       let index = this.state.restaurants.indexOf(toDelete)
-      console.log(index)
-
       if (index != null) {
         this.state.restaurants.splice(index, 1)
         this.setState({restaurants: this.state.restaurants})
@@ -75,7 +72,6 @@ class Restaurants extends Component {
   }
 
   render() {
-
     const {classes} = this.props;
     const renderOwnedRestaurants = (
       <div id='restaurantCardContainer'>

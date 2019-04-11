@@ -18,6 +18,7 @@ import EditRestaurant from "./screens/EditRestaurant";
 import AddPhotos from "./screens/AddPhotos";
 import Reviews from "./screens/Reviews";
 import ViewPhoto from "./screens/ViewPhoto";
+import Profile from "./screens/Profile";
 
 
 
@@ -53,6 +54,7 @@ class App extends Component {
             <PrivateRoute exact path="/restaurants" component={Restaurants} />
             <PrivateRoute exact path="/setRestaurant" component={setRestaurant} />
             <PrivateRoute exact path="/addMenu" component={AddMenu} />
+            <PrivateRoute exact path="/profile" component={Profile} />
             <PrivateRoute exact path="/viewOrders" component={ViewOrders} />
             <PrivateRoute exact path="/addPhotos" component={AddPhotos} />
             <PrivateRoute exact path="/viewMenu" component={ViewMenu} />
